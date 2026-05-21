@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PO Workflow - Stories Output",
+  "description": "Contract between the Slice agent and the Post script. Array of User Stories to create in ADO under a Feature.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["title", "description", "acceptanceCriteria", "briefMarkdown"],
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "User Story title"
+      },
+      "description": {
+        "type": "string",
+        "description": "High-level what/why (shows in ADO description field)"
+      },
+      "acceptanceCriteria": {
+        "type": "string",
+        "description": "Testable conditions (shows in ADO AC field)"
+      },
+      "briefMarkdown": {
+        "type": "string",
+        "description": "Rich implementation brief attached as .md file to the Story"
+      }
+    }
+  }
+}
