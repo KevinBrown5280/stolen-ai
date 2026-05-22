@@ -12,7 +12,9 @@ param(
     [string]$Org,
 
     [Parameter(Mandatory)]
-    [string]$Project
+    [string]$Project,
+
+    [switch]$DryRun
 )
 
 $ErrorActionPreference = "Stop"
@@ -24,8 +26,7 @@ $plan = Get-Content $InputFile -Raw | ConvertFrom-Json
 $specDir = "specs/$Feature"
 if (-not (Test-Path $specDir)) { New-Item -ItemType Directory -Path $specDir -Force | Out-Null }
 
-$storySlug = $plan.storyTitle -replace '[^a-zA-Z0-9]', '-' -replace '-+', '-' -replace '^-|-$', ''
-$specFile = "$specDir/$($storySlug.ToLower()).md"
+$specFile = "$specDir/$($plan.storyId).md"
 
 $specContent = @"
 # $($plan.storyTitle)
@@ -44,10 +45,13 @@ $specContent | Out-File -FilePath $specFile -Encoding utf8
 Write-Host "Wrote spec: $specFile"
 
 # --- 2. Auto-commit to feature branch ---
-git add $specFile
-git commit -m "docs: add implementation spec for $($plan.storyTitle)" --quiet
-
-Write-Host "Committed to current branch"
+if ($DryRun) {
+    Write-Host "[DryRun] Would commit: $specFile"
+} else {
+    git add $specFile
+    git commit -m "docs: add implementation spec for $($plan.storyTitle)" --quiet
+    Write-Host "Committed to current branch"
+}
 
 # --- 3. Post summary to ADO Story discussion ---
 $discussionBody = "## Implementation Plan`n`n"
@@ -62,15 +66,31 @@ foreach ($d in $plan.decisions) {
 }
 
 # Post as comment via REST API (az boards doesn't have a discussion command)
-$token = az account get-access-token --query accessToken -o tsv
-$headers = @{
-    Authorization  = "Bearer $token"
-    "Content-Type" = "application/json"
-}
-$body = @{ text = $discussionBody } | ConvertTo-Json
-$uri = "$orgUrl/$Project/_apis/wit/workItems/$($plan.storyId)/comments?api-version=7.1-preview.3"
+# Convert to HTML for ADO rendering
+$html = $discussionBody `
+    -replace '(?m)^## (.+)', '<h3>$1</h3>' `
+    -replace '\*\*(.+?)\*\*', '<strong>$1</strong>' `
+    -replace '(?m)^- \[ \] (.+)', '<li>☐ $1</li>' `
+    -replace '(?m)^- (.+)', '<li>$1</li>' `
+    -replace '(<li>.*</li>(\r?\n)?)+', '<ul>$0</ul>' `
+    -replace "`r`n", "<br>" -replace "`n", "<br>"
 
-Invoke-RestMethod -Method Post -Uri $uri -Headers $headers -Body $body | Out-Null
-Write-Host "Posted plan to Story #$($plan.storyId) discussion"
+$html += "<br><p><em>Posted by dev-workflow • $(Get-Date -Format 'yyyy-MM-dd HH:mm')</em></p>"
+
+if ($DryRun) {
+    Write-Host "[DryRun] Would post to Story #$($plan.storyId) discussion:"
+    Write-Host $discussionBody
+} else {
+    $token = az account get-access-token --query accessToken -o tsv
+    $headers = @{
+        Authorization  = "Bearer $token"
+        "Content-Type" = "application/json"
+    }
+    $body = @{ text = $html } | ConvertTo-Json
+    $uri = "$orgUrl/$Project/_apis/wit/workItems/$($plan.storyId)/comments?api-version=7.1-preview.3"
+
+    Invoke-RestMethod -Method Post -Uri $uri -Headers $headers -Body $body | Out-Null
+    Write-Host "Posted plan to Story #$($plan.storyId) discussion"
+}
 
 Write-Host "Done."
