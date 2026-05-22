@@ -38,11 +38,19 @@ This writes `specs/{feature}/{story}.md`, commits to branch, and posts to ADO di
 
 ### Step 5: TDD Loop
 For each task (respecting dependency order, parallel where deps allow):
-1. Invoke TDD process scoped to the task's description and testStrategy
-2. After task completes, invoke `micro-review` skill as sub-agent with the diff
-3. If micro-review reports "drift_detected" with severity "blocking" → pause and show findings to user
-4. User decides: fix or override
-5. Continue to next task
+1. Check if the task has a `testStrategy` that implies automated tests.
+   - If `testStrategy` starts with "Manual" or is absent → skip TDD, implement directly using the task's `description` as spec.
+   - If `testStrategy` specifies automated tests → invoke the `tdd` skill.
+2. When invoking TDD, provide this context to the skill:
+   - **What to build**: task `description` (this is the implementation spec)
+   - **What to test**: task `testStrategy` (these are the behaviors to verify)
+   - **Scope**: only the files/interfaces mentioned in the task — do not expand scope
+   - Skip the TDD planning phase (interface confirmation) — the dev-grill already locked that.
+   - Begin at the Tracer Bullet step (write first test for first behavior).
+3. After task completes (TDD or direct implementation), invoke `micro-review` agent with the diff.
+4. If micro-review reports "drift_detected" with severity "blocking" → pause and show findings to user.
+5. User decides: fix or override.
+6. Continue to next task.
 
 ### Step 6: Complete
 When all tasks pass micro-review, report completion.
