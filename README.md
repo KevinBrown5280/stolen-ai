@@ -66,6 +66,14 @@ output/                           # Transient (gitignored)
     feedback.md                  # PO feedback for revision rounds
 ```
 
+## Process Artifacts
+
+| Template | When to use | Location |
+|----------|-------------|----------|
+| [Retrospective](docs/retrospective-template.md) | After each completed PO or Dev workflow run | Copy to `output/{id}/retro.md` and fill in |
+
+Both workflow agents remind you at end-of-run.
+
 ## Design Principles
 
 - **AI = brain, scripts = hands** — no tokens burned on CRUD

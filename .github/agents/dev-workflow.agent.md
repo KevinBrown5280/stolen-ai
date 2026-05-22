@@ -56,6 +56,10 @@ For each task (respecting dependency order, parallel where deps allow):
 When all tasks pass micro-review, report completion.
 Summarize what was built and link to the ADO Story.
 
+### Step 7: Retrospective Nudge
+After completion, remind the user:
+> "Consider filling out a retrospective: copy `docs/retrospective-template.md` to `output/{story-id}/retro.md` and capture what worked, what didn't, and adjustments for next time."
+
 ## Rules
 
 - Always wait for human approval at Step 3 before Step 4

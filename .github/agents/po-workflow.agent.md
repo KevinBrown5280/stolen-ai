@@ -70,6 +70,10 @@ scripts/po-workflow/post-stories.ps1 -InputFile output/{feature-id}/stories.json
 ```
 Report the created Story IDs and links back to the user.
 
+### Step 6: Retrospective Nudge
+After posting, remind the user:
+> "Consider filling out a retrospective: copy `docs/retrospective-template.md` to `output/{feature-id}/retro.md` and capture what worked, what didn't, and adjustments for next time."
+
 ## Rules
 
 - Always wait for human approval at Step 4 before Step 5
