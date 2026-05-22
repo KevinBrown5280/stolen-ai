@@ -98,16 +98,53 @@ if ($DryRun) {
 
 $results = @()
 
+# Get access token for REST attachment upload
+$token = az account get-access-token --resource "499b84ac-1321-427f-aa17-267ca6975798" --query accessToken -o tsv
+$uploadHeaders = @{ Authorization = "Bearer $token"; "Content-Type" = "application/octet-stream" }
+
+# Inherit area/iteration/service line from parent Feature
+$parent = az boards work-item show --id $ParentId --org $orgUrl --output json | ConvertFrom-Json
+$areaPath = $parent.fields.'System.AreaPath'
+$iterationPath = $parent.fields.'System.IterationPath'
+$serviceLine = $parent.fields.'Tas.ServiceLine'
+
 foreach ($story in $stories) {
-    # Create the User Story
-    $item = az boards work-item create `
-        --type "User Story" `
-        --title $story.title `
-        --description $story.description `
-        --org $orgUrl `
-        --project $Project `
-        --fields "Microsoft.VSTS.Common.AcceptanceCriteria=$($story.acceptanceCriteria)" `
-        --output json | ConvertFrom-Json
+    # Create the User Story (without multiline AC field to avoid argument parsing issues)
+    $item = $null
+    try {
+        $item = az boards work-item create `
+            --type "User Story" `
+            --title $story.title `
+            --description $story.description `
+            --org $orgUrl `
+            --project $Project `
+            --fields "System.AreaPath=$areaPath" `
+                     "System.IterationPath=$iterationPath" `
+                     "Tas.ServiceLine=$serviceLine" `
+                     "Tas.UserStoryType=User Story" `
+            --output json | ConvertFrom-Json
+    } catch {
+        Write-Warning "Failed to create story: $($story.title)"
+        Write-Warning "$_"
+        continue
+    }
+    if (-not $item -or -not $item.id) {
+        Write-Warning "Failed to create story (no id returned): $($story.title)"
+        continue
+    }
+
+    # Update with multiline Acceptance Criteria via REST API
+    # AC is an HTML field — convert newlines to <br> so they render correctly
+    try {
+        $acHtml = $story.acceptanceCriteria -replace "`r`n", "<br>" -replace "`n", "<br>"
+        $patchBody = ConvertTo-Json -Depth 3 -InputObject @(
+            @{ op = "add"; path = "/fields/Microsoft.VSTS.Common.AcceptanceCriteria"; value = $acHtml }
+        )
+        $patchHeaders = @{ Authorization = "Bearer $token"; "Content-Type" = "application/json-patch+json" }
+        Invoke-RestMethod -Uri "$orgUrl/_apis/wit/workitems/$($item.id)?api-version=7.1" -Method Patch -Headers $patchHeaders -Body ([System.Text.Encoding]::UTF8.GetBytes($patchBody)) | Out-Null
+    } catch {
+        Write-Warning "Failed to set AC for Story #$($item.id): $_"
+    }
 
     # Link to parent Feature
     az boards work-item relation add `
@@ -117,16 +154,25 @@ foreach ($story in $stories) {
         --org $orgUrl `
         --output none
 
-    # Attach the .md brief
+    # Attach the .md brief (two-step: upload file via REST, then link)
     $briefPath = [System.IO.Path]::GetTempPath() + "$($item.id)-brief.md"
     $story.briefMarkdown | Out-File -FilePath $briefPath -Encoding utf8
 
-    az boards work-item relation add `
-        --id $item.id `
-        --relation-type "AttachedFile" `
-        --target-url $briefPath `
-        --org $orgUrl `
-        --output none
+    $briefBytes = [System.IO.File]::ReadAllBytes($briefPath)
+    $uploadUrl = "$orgUrl/$Project/_apis/wit/attachments?fileName=$($item.id)-brief.md&api-version=7.1"
+    try {
+        $uploadResponse = Invoke-RestMethod -Uri $uploadUrl -Method Post -Headers $uploadHeaders -Body $briefBytes
+        $attachmentUrl = $uploadResponse.url
+
+        az boards work-item relation add `
+            --id $item.id `
+            --relation-type "Attached File" `
+            --target-url $attachmentUrl `
+            --org $orgUrl `
+            --output none
+    } catch {
+        Write-Warning "Failed to upload/attach brief for Story #$($item.id): $_"
+    }
 
     Remove-Item $briefPath -ErrorAction SilentlyContinue
 
@@ -137,6 +183,22 @@ foreach ($story in $stories) {
     }
 
     Write-Host "Created Story #$($item.id): $($story.title)"
+}
+
+# Post slice summary as a Discussion comment on the parent Feature
+$commentHtml = "<h3>&#x1F4CB; Stories sliced from this Feature</h3><ul>"
+foreach ($r in $results) {
+    $commentHtml += "<li><a href=`"$orgUrl/$Project/_workitems/edit/$($r.id)`">#$($r.id)</a> — $($r.title)</li>"
+}
+$commentHtml += "</ul><p><em>Posted by po-workflow • $(Get-Date -Format 'yyyy-MM-dd HH:mm')</em></p>"
+
+try {
+    $commentBody = @{ text = $commentHtml } | ConvertTo-Json -Depth 2
+    $commentHeaders = @{ Authorization = "Bearer $token"; "Content-Type" = "application/json" }
+    Invoke-RestMethod -Uri "$orgUrl/$Project/_apis/wit/workItems/$ParentId/comments?api-version=7.1-preview.4" -Method Post -Headers $commentHeaders -Body ([System.Text.Encoding]::UTF8.GetBytes($commentBody)) | Out-Null
+    Write-Host "Posted slice summary comment on Feature #$ParentId"
+} catch {
+    Write-Warning "Failed to post summary comment on Feature #$ParentId`: $_"
 }
 
 $results | ConvertTo-Json -Depth 3 | Write-Output
