@@ -33,6 +33,7 @@ When feedback is provided alongside previous stories:
 - Stories are **testable** against their Acceptance Criteria alone
 - Prefer thin vertical slices over horizontal layers
 - Target: Stories completable in 1-3 days by a single dev
+- For named patterns and anti-patterns, consult `docs/feature-decomposition.md`
 
 ## Output Format
 
