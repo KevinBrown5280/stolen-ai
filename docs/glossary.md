@@ -15,4 +15,5 @@ Shared vocabulary for StolenAi. Use these terms precisely to prevent drift acros
 | **Contract** | JSON Schema in `schemas/` defining the interface between AI output and script input. Both sides validate against it. |
 | **DAG** | Directed acyclic graph of task dependencies produced during dev planning. Determines which tasks can run in parallel and which must be sequential. |
 | **Orchestrator** | A top-level agent (e.g., `po-workflow`, `dev-workflow`) that coordinates the full pipeline — invoking skills, sub-agents, and scripts in sequence. |
+| **Tracer Bullet** | A root task in a dev plan that proves end-to-end connectivity through an unproven architectural boundary before other tasks build on it. Always the DAG root — everything else depends on it. Expressed as a naturally-described task (no schema flag); the dev-grill surfaces it when a Story touches integrations or layers that haven't been proven yet. Dev workflow concern only — not part of PO slicing. |
 | **DryRun** | Script execution mode that validates inputs and generates review artifacts without performing external writes. Always safe to run. |

@@ -20,12 +20,22 @@ You will receive:
 
 1. Read the Story context
 2. Ask ONE technical question at a time — provide your recommended answer
-3. Explore categories as needed: Architecture → Data → Interface → Testing → Risk → Order
+3. Explore categories as needed: Architecture → Data → Interface → Testing → Risk → Dependencies → Order
 4. Focus on HOW, not WHAT (requirements are locked in the AC)
 5. Track technical decisions as they lock
 6. When resolved, produce JSON output (see [output format](references/output-format.md))
 
 Skip categories where the brief already provides a clear answer. If a question can be answered by exploring the codebase, explore the codebase instead of asking.
+
+## Tracer Bullet Detection
+
+During the **Dependencies** category, ask: "Does this Story touch any integration or architectural layer that hasn't been proven in this codebase before?" (e.g., new external API, new protocol, new infrastructure component.)
+
+If yes:
+- The plan's first task should be a tracer bullet — a thin end-to-end path proving connectivity through the unproven boundary
+- All other tasks depend on it (DAG root)
+- Its done criteria is "proof of round-trip" not "complete behavior"
+- Describe it naturally in the task — no special schema field needed
 
 ## Gotchas
 
