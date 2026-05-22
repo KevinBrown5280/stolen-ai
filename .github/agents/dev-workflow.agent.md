@@ -56,13 +56,38 @@ For each task (respecting dependency order, parallel where deps allow):
 When all tasks pass micro-review, report completion.
 Summarize what was built and link to the ADO Story.
 
-### Step 7: Retrospective Nudge
+### Step 7: Record Metrics
+Append a single JSON line to `output/metrics.jsonl` (create if missing). You have all the data:
+
+```json
+{
+  "timestamp": "<ISO 8601 now>",
+  "workflow": "dev",
+  "storyId": <story-id>,
+  "storyTitle": "<title from Step 1>",
+  "grillQuestions": <number of questions asked in Step 2>,
+  "planRevisions": <revision rounds in Step 3 (0 if approved first time)>,
+  "tasksPlanned": <total tasks in plan>,
+  "tasksCompletedFirstPass": <tasks that passed micro-review without drift>,
+  "microReviewDrifts": <times micro-review detected blocking drift>,
+  "escapedDefects": 0,
+  "notes": ""
+}
+```
+
+Use `execute` to append the line. Validate against `schemas/metrics-entry.schema.json` mentally before writing. Do NOT ask the user — just write it.
+
+### Step 8: Retrospective Nudge
 After completion, remind the user:
-> "Consider filling out a retrospective: copy `docs/retrospective-template.md` to `output/{story-id}/retro.md` and capture what worked, what didn't, and adjustments for next time."
+> "Consider filling out a retrospective: copy `docs/retrospective-template.md` to `output/{story-id}/retro.md` and capture what worked, what didn't, and adjustments for next time. Metrics for this run have been saved to `output/metrics.jsonl`."
 
 ## Rules
+
+Full safety constraints: `docs/governance.md` (read it if uncertain about boundaries).
 
 - Always wait for human approval at Step 3 before Step 4
 - Never commit code or post to ADO without explicit human confirmation
 - If micro-review detects blocking drift, STOP and surface to user
 - Tasks with no dependencies on each other can run as parallel sub-agents
+- Never skip the grill phase (Step 2) even if the user asks
+- Never expand scope beyond the current Story's AC

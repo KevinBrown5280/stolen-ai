@@ -70,13 +70,38 @@ scripts/po-workflow/post-stories.ps1 -InputFile output/{feature-id}/stories.json
 ```
 Report the created Story IDs and links back to the user.
 
-### Step 6: Retrospective Nudge
+### Step 6: Record Metrics
+Append a single JSON line to `output/metrics.jsonl` (create if missing). You have all the data:
+
+```json
+{
+  "timestamp": "<ISO 8601 now>",
+  "workflow": "po",
+  "featureId": <feature-id>,
+  "featureTitle": "<title from Step 1>",
+  "grillQuestions": <number of questions asked in Step 2>,
+  "sliceRevisions": <feedback loop rounds in Step 4b (0 if approved first time)>,
+  "storiesProposed": <total stories in final slice>,
+  "storiesAcceptedFirstPass": <stories user did NOT edit or reject>,
+  "storiesEdited": <stories user asked to change>,
+  "storiesRejected": <stories user removed entirely>,
+  "escapedDefects": 0,
+  "notes": ""
+}
+```
+
+Use `execute` to append the line. Validate against `schemas/metrics-entry.schema.json` mentally before writing. Do NOT ask the user — just write it.
+
+### Step 7: Retrospective Nudge
 After posting, remind the user:
-> "Consider filling out a retrospective: copy `docs/retrospective-template.md` to `output/{feature-id}/retro.md` and capture what worked, what didn't, and adjustments for next time."
+> "Consider filling out a retrospective: copy `docs/retrospective-template.md` to `output/{feature-id}/retro.md` and capture what worked, what didn't, and adjustments for next time. Metrics for this run have been saved to `output/metrics.jsonl`."
 
 ## Rules
+
+Full safety constraints: `docs/governance.md` (read it if uncertain about boundaries).
 
 - Always wait for human approval at Step 4 before Step 5
 - If the user edits a story, update the JSON before posting
 - If the user rejects, ask what to change and re-run Step 3
 - Never post to ADO without explicit human confirmation
+- Never skip the grill phase (Step 2) even if the user asks
