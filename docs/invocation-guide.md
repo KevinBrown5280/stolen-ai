@@ -1,7 +1,3 @@
----
-applyTo: "scripts/**,output/**,README.md"
----
-
 # How to Invoke StolenAi Workflows
 
 Loaded when working with scripts, output, or session planning. Guides users on HOW to trigger each workflow.
