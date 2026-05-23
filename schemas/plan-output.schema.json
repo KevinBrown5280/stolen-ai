@@ -49,6 +49,11 @@
             "type": "array",
             "items": { "type": "string" },
             "description": "IDs of tasks that must complete first"
+          },
+          "files": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Files this task will create or modify. Used for parallel phase assignment — tasks sharing files cannot be in the same phase."
           }
         }
       }

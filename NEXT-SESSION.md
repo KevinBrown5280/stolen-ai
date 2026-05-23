@@ -72,7 +72,7 @@ Reviewed against:
 - **Independent units** (P2) — slice agent produces stories with file ownership + AC
 - **Human designs, agent executes, both review** (P4) — human checkpoint enforced architecturally (script/AI split)
 - **Independent review** (P6) — micro-review after each TDD task
-- **Waves not waterfalls** (P7) — DAG-based parallelism in dev workflow
+- **Waves not waterfalls** (P7) — DAG-based phase parallelism; independent tasks spawn concurrent sub-agents within a phase (same pattern as wave swarming, at task granularity)
 - **Machine-verifiable contracts** — JSON schemas tighter than the template's markdown conventions
 - **Cost discipline** — "AI = brain, scripts = hands" is concrete; template only discusses philosophically
 - **Agent context file** — `.github/copilot-instructions.md` codifies design principles + conventions
@@ -96,10 +96,9 @@ Reviewed against:
 |-----------|----------------------|-----------|
 | Tracker | GitHub Issues + Projects | Azure DevOps (enterprise) |
 | Agent autonomy | Agents earn autonomy, eventually create issues | Conservative — agents never touch ADO directly |
-| Parallelism | Wave-based swarming (multiple agents, separate branches) | DAG-based sequential + parallel where deps allow |
 | CI/CD | First story built; governance from day one | Not addressed (PoC scope) |
 | Doc maintenance | Agents required to update docs every change | Manual |
-| MCP | `mcp.json` included | Explicitly excluded for PoC (Decision 18) |
+| MCP | `mcp.json` included | No custom MCP; uses Microsoft Learn + Context7 MCPs for docs/library lookups. Custom MCP excluded for PoC (Decision 18) |
 
 ### Assessment
 

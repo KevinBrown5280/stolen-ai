@@ -36,21 +36,28 @@ Ask: "This is the plan. Approve, edit, or reject?"
 Once approved, run `scripts/dev-workflow/persist-plan.ps1` with the plan JSON.
 This writes `specs/{feature}/{story}.md`, commits to branch, and posts to ADO discussion.
 
-### Step 5: TDD Loop
-For each task (respecting dependency order, parallel where deps allow):
-1. Check if the task has a `testStrategy` that implies automated tests.
-   - If `testStrategy` starts with "Manual" or is absent → skip TDD, implement directly using the task's `description` as spec.
-   - If `testStrategy` specifies automated tests → invoke the `tdd` skill.
-2. When invoking TDD, provide this context to the skill:
+### Step 5: TDD Loop (Phase-Based Parallel Execution)
+
+Group tasks into phases using the DAG dependencies AND file overlap:
+1. **Phase 1** = all tasks with no unmet dependencies (typically the tracer bullet)
+2. **Phase 2** = tasks whose dependencies were all completed in earlier phases
+3. Continue until all tasks are assigned to a phase
+4. **File overlap check:** Within each phase, compare `files` arrays. If two tasks share any file, move the later one (by task order) to the next phase. Repeat until no overlap within any phase.
+
+For each phase:
+1. Identify all tasks in this phase.
+2. **Spawn sub-agents in parallel** — invoke one sub-agent per task simultaneously (multiple `runSubagent` calls in a single batch). Each sub-agent receives:
    - **What to build**: task `description` (this is the implementation spec)
    - **What to test**: task `testStrategy` (these are the behaviors to verify)
    - **Scope**: only the files/interfaces mentioned in the task — do not expand scope
-   - Skip the TDD planning phase (interface confirmation) — the dev-grill already locked that.
-   - Begin at the Tracer Bullet step (write first test for first behavior).
-3. After task completes (TDD or direct implementation), invoke `micro-review` agent with the diff.
-4. If micro-review reports "drift_detected" with severity "blocking" → pause and show findings to user.
-5. User decides: fix or override.
-6. Continue to next task.
+   - If `testStrategy` starts with "Manual" or is absent → implement directly, no TDD
+   - If `testStrategy` specifies automated tests → run TDD (skip planning phase, begin at first test)
+3. Wait for all sub-agents in the phase to complete.
+4. After each task completes, invoke `micro-review` agent with the diff.
+5. If micro-review reports "drift_detected" with severity "blocking" → pause and show findings to user. User decides: fix or override.
+6. Once all tasks in the phase pass micro-review, move to the next phase.
+
+**File conflict prevention:** Tasks in the same phase MUST touch non-overlapping files (guaranteed by the plan's file ownership). If two tasks share a file, they must be in different phases (sequential).
 
 ### Step 6: Complete
 When all tasks pass micro-review, report completion.
