@@ -89,6 +89,10 @@
     "notes": {
       "type": "string",
       "description": "Free-form observations or context"
+    },
+    "treatment": {
+      "type": "string",
+      "description": "Name of skill/agent change being tested. Omit for baseline runs. Used to filter treatment vs. baseline entries during lift-vs-drag comparison."
     }
   },
   "allOf": [

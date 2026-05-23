@@ -84,13 +84,8 @@ Reviewed against:
 - **Shared vocabulary** — `docs/glossary.md` defines 12 terms (grill, slice, brief, persist, micro-review, drift, checkpoint, surface, contract, DAG, orchestrator, tracer bullet)
 - **CI/CD from day one** — slice agent notes CI/CD in first story's brief when no pipeline exists; dev-grill folds pipeline setup into the tracer bullet
 - **Doc maintenance** — signal-then-decide: micro-review collects `docHints` per phase, dev-workflow aggregates post-completion, human acts. Avoids both staleness (manual-only) and cost waste (auto-update every change)
-
-### Gaps to Close
-
-| Gap | What the template has | Action |
-|-----|----------------------|--------|
-| Issue template | Structured fields: scope, file ownership, negative constraints | Consider an ADO work item template mirroring their `agentic-story.md` |
-| Lift vs. drag measurement | Before/after comparison proving extensions improve outcomes | Run same scenario with/without skills, compare (requires end-to-end data) |
+- **Structured story fields** — schema enforcement + `plan-output.schema.json` `files[]` at task level. Stronger than GH issue templates (enforced gate vs. suggestion). File ownership deferred to [roadmap](docs/roadmap.md).
+- **Lift vs. drag measurement** — comparison protocol in `docs/metrics.md` with `treatment` field in schema. Baseline data collecting (1/3 PO runs).
 
 ### Philosophical Differences (intentional)
 
@@ -112,10 +107,6 @@ Reviewed against:
 5. Enforced human checkpoints via architecture (script/AI boundary) vs. process suggestion
 6. Feedback/revision loop for slice refinement — template has no equivalent
 
-**Biggest gaps to close (priority order):**
-1. ADO work item template — structured fields mirroring `agentic-story.md` (low priority, "Consider")
-2. Lift vs. drag measurement — requires end-to-end runs to generate baseline comparison data
-
 ### AX Stack Relevance (May 2026)
 
 From [The AX Stack: What's Fixed, Where You Can Win](https://developer.microsoft.com/blog/the-ax-stack-whats-fixed-where-you-can-win) (Waldek Mastykarz):
@@ -125,7 +116,5 @@ From [The AX Stack: What's Fixed, Where You Can Win](https://developer.microsoft
 | Zero-sum context window | Addressed — progressive disclosure keeps skills minimal |
 | Discovery | Addressed — clear naming (`po-grill`, `slice`, `dev-grill`) + explicit frontmatter triggers |
 | Selection | Addressed — skill/agent separation means correct tool type is invoked per task |
-| Quality (lift vs. drag) | **Partial** — `docs/metrics.md` framework exists; needs end-to-end runs to generate comparison data |
+| Quality (lift vs. drag) | Addressed — protocol in `docs/metrics.md`; `treatment` field in schema. Blocked on baseline data (need ≥3 runs). |
 | Composition | Low risk now (small set), relevant when scaling to other teams |
-
-**Takeaway:** When formalizing measurement (gap #3 above), use the AX "lift vs. drag" framing — run same scenario with/without extensions, compare outcomes.

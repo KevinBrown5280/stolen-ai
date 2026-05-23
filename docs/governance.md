@@ -80,20 +80,9 @@ Agents MUST produce valid JSON against the relevant schema. Scripts MUST validat
 
 ## Future: Graduated Agent Autonomy
 
-Not active for PoC. Requires sustained metrics data (`output/metrics.jsonl`) to justify removing human gates. Included here so future decisions have a framework.
+See [roadmap.md](roadmap.md#graduated-agent-autonomy) for the full tier table and unlock criteria.
 
-| Tier | Behaviour | Unlock Criteria |
-|------|-----------|-----------------|
-| 0 (current) | Agent produces JSON → human reviews → script posts | Default — no trust data needed |
-| 1 | On re-slice with minor feedback, agent posts delta without re-presenting all stories for approval | Human already approved intent; only mechanical changes applied |
-| 2 | Slice → validate schema → post with no human gate | `firstPassAcceptanceRate >= 0.9` over last 10 runs |
-| 3 | Agent self-initiates on ADO state change (e.g., Feature → "Ready"), posts draft stories tagged `[needs-review]` | Sustained Tier 2 + async review workflow established in ADO |
-
-**Rules:**
-- Tier revokes automatically if a run triggers rework (drops back one level)
-- All auto-posted items must be tagged `[auto]` for audit trail
-- Metrics pipeline must be running and trustworthy before any tier > 0 is enabled
-- Governance Rule §1 (human checkpoint) relaxes per-tier but §2 (AI never calls `az devops` directly) remains — scripts still execute the CRUD
+Currently at **Tier 0** (agent produces JSON → human reviews → script posts). Governance Rule §2 (AI never calls `az devops` directly) remains at all tiers.
 
 ## Doc Maintenance
 

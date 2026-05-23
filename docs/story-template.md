@@ -28,7 +28,7 @@ All fields defined in `schemas/stories-output.schema.json`:
 
 - **negativeConstraints** — Array of strings declaring what this story does NOT do
 
-> **Note:** File ownership is intentionally NOT part of either schema today. See "Future: File Ownership" below.
+> **Note:** File ownership deferred — see [roadmap.md](roadmap.md#file-ownership-story-level).
 
 ## Brief Markdown Sections
 
@@ -63,28 +63,7 @@ References to architectural decisions that apply.
    - **dev-grill**: surfaces boundaries the dev must respect
    - **scope creep prevention**: clear "stop" signals during implementation
 
-## Relationship to Agentic-Agile Template
+## Design Notes
 
-| Agentic-Agile Field | StolenAi Equivalent |
-|---------------------|---------------------|
-| Summary | `description` |
-| Originating Prompt | Captured via grill summary (not per-story) |
-| Context / Motivation | Brief → Context section |
-| Files to Create or Modify | Not formalized — task `description` implies files |
-| Interfaces to Implement | Brief → Suggested Approach |
-| Invariants to Preserve | `negativeConstraints` + Brief → Negative Constraints |
-| Acceptance Criteria | `acceptanceCriteria` (Given/When/Then) |
-| Negative Constraints | `negativeConstraints` field |
-| Dependencies | Not used — stories are independently deliverable |
-| File Ownership | Not formalized — see "Future: File Ownership" below |
-
-## Future: File Ownership
-
-File ownership is **not currently formalized** in any schema. It would add value when:
-
-1. **Parallel story execution** — multiple devs working stories from the same slice simultaneously, needing to avoid merge conflicts on shared files. Add `fileOwnership` at the **story level** (populated by dev-grill, not PO slice).
-2. **Wave-based swarming** — if StolenAi adopts the agentic-agile "wave" model where multiple agents work separate stories on separate branches concurrently.
-
-It does NOT add value at the **task level** because tasks within a single story are executed by one dev sequentially (DAG order). The task `description` already implies which files are touched, and micro-review detects drift from that.
-
-**When to revisit:** If you introduce parallel story execution or multi-agent swarming, add a `fileOwnership` array to `stories-output.schema.json` (populated during dev-grill, not PO slice) with structure: `[{ "path": "...", "action": "create|modify|delete" }]`.
+- Modeled after [microsoft/agentic-agile-template](https://github.com/microsoft/agentic-agile-template) `agentic-story.md`. Key differences: file ownership deferred (see [roadmap](roadmap.md#file-ownership-story-level)), dependencies omitted (stories are independently deliverable), scope/files captured at task level in `plan-output.schema.json` during dev-grill.
+- ADO lacks issue templates. Schema validation in `post-stories.ps1` is the enforcement mechanism.

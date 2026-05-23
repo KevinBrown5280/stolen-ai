@@ -79,6 +79,59 @@ When evaluating a skill/agent change, compare:
 
 A change is **lift** if it reduces rework, increases first-pass acceptance, or reduces grill questions without degrading other dimensions. A change is **drag** if it increases any dimension negatively without offsetting gains.
 
+### Comparison Protocol
+
+To formally evaluate a skill/agent change:
+
+#### 1. Define the Experiment
+
+| Field | Value |
+|-------|-------|
+| **Change under test** | Description of skill/agent/schema change |
+| **Hypothesis** | "Reduces rework by X%" or "Increases first-pass by Y%" |
+| **Scope** | Which workflow (PO/Dev), which Feature/Story types |
+| **Baseline** | Historical average from `output/metrics.jsonl` for matching scope |
+
+#### 2. Collect Baseline (minimum 3 runs)
+
+Run the workflow **without** the change on comparable Features/Stories. Record entries in `output/metrics.jsonl`. Minimum 3 runs to establish variance. Same Feature area preferred for controlled comparison.
+
+If historical entries already exist for the scope, use those as baseline (no need to re-run without the change).
+
+#### 3. Run Treatment (minimum 3 runs)
+
+Run the workflow **with** the change on comparable Features/Stories. Record entries with a `"treatment": "<change-name>"` field added to the JSONL entry for filtering.
+
+#### 4. Compare
+
+```
+Baseline avg(storiesAcceptedFirstPass / storiesProposed) vs. Treatment avg
+Baseline avg(sliceRevisions or planRevisions)             vs. Treatment avg
+Baseline avg(grillQuestions)                              vs. Treatment avg
+```
+
+#### 5. Verdict
+
+| Result | Verdict |
+|--------|---------|
+| Treatment improves ≥1 dimension, degrades none | **Lift** — ship the change |
+| Treatment improves ≥1, degrades ≥1 | **Trade-off** — human decides |
+| Treatment degrades ≥1, improves none | **Drag** — revert or iterate |
+| No measurable difference | **Neutral** — ship if it improves DX without cost |
+
+#### 6. Record
+
+Add an entry to the retrospective documenting: change tested, hypothesis, baseline/treatment averages, and verdict.
+
+### Current Baseline Status
+
+| Workflow | Entries | Status |
+|----------|---------|--------|
+| PO | 1 | Collecting — need ≥3 for reliable baseline |
+| Dev | 0 | Not started — pending first full dev-workflow run |
+
+**Next milestone:** Complete 3 PO workflow runs and 1 Dev workflow run to establish usable baselines.
+
 ## Relation to Retrospectives
 
 The [retrospective template](retrospective-template.md) includes a Metrics section. After formalizing, that section is **required** (not optional) and must reference the JSONL entry for the run.
