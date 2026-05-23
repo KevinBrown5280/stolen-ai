@@ -32,6 +32,7 @@ Both orchestrator agents (`po-workflow.agent.md`, `dev-workflow.agent.md`) **aut
   "storiesEdited": 0,
   "storiesRejected": 0,
   "escapedDefects": 0,
+  "durationMinutes": 35,
   "notes": ""
 }
 ```
@@ -50,6 +51,7 @@ Both orchestrator agents (`po-workflow.agent.md`, `dev-workflow.agent.md`) **aut
   "tasksCompletedFirstPass": 4,
   "microReviewDrifts": 0,
   "escapedDefects": 0,
+  "durationMinutes": 45,
   "notes": ""
 }
 ```
@@ -135,3 +137,18 @@ Add an entry to the retrospective documenting: change tested, hypothesis, baseli
 ## Relation to Retrospectives
 
 The [retrospective template](retrospective-template.md) includes a Metrics section. After formalizing, that section is **required** (not optional) and must reference the JSONL entry for the run.
+
+## Dimension Coverage Rationale
+
+The [Agentic-Agile template](https://github.com/microsoft/agentic-agile-template/blob/main/docs/evaluation-framework.md) defines 8 evaluation dimensions. StolenAi intentionally uses fewer top-level dimensions, covering the same ground through architectural constraints and implicit derivation.
+
+| Template Dimension | StolenAi Coverage | Rationale |
+|---|---|---|
+| D1 Spec Quality | **First-pass acceptance** (output quality) + **Grill efficiency** (input quality) | Grill creates the spec; efficiency measures input quality. Acceptance measures output quality. Two sides of the same coin split for diagnostic value. |
+| D2 Decomposition Effectiveness | **Slice-time validation** (file overlap check) | Single-developer PoC — merge conflicts structurally impossible. Validated at slice time instead: stories in a Feature must not declare overlapping file lists. Deferred as runtime metric until multi-dev. |
+| D3 Agent Reliability | Implicit via **microReviewDrifts** correlation | If drifts trend up while first-pass acceptance holds → agent problem. If both degrade → spec problem. Diagnostic fork without pass^k token cost. |
+| D4 Partnership Efficiency | **Structural invariant** — architecture enforces human=design, agent=execute | Rework cycles captures the only variable part. Measuring time-on-correction vs. time-on-design is measuring a constant. |
+| D5 Delivery Performance | **durationMinutes** field + **escapedDefects** | Wall-clock time per run gives delivery speed trend. Escaped defects = change failure rate. |
+| D6 Governance Health | **Escaped defects** | Direct mapping. |
+| D7 Cost Efficiency | **durationMinutes** as human-time proxy | Agent compute cost (tokens) not exposed by Copilot telemetry. Duration is the only honest cost signal available. Deferred until telemetry available. |
+| D8 Process Maturity | **Roadmap + retrospective template** | Not a per-run metric. Self-assessment captured through roadmap progression and retrospective reviews. |

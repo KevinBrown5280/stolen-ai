@@ -93,6 +93,11 @@
     "treatment": {
       "type": "string",
       "description": "Name of skill/agent change being tested. Omit for baseline runs. Used to filter treatment vs. baseline entries during lift-vs-drag comparison."
+    },
+    "durationMinutes": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Wall-clock time from workflow start (fetch) to completion (post/persist). Measures delivery performance and serves as human-time cost proxy."
     }
   },
   "allOf": [

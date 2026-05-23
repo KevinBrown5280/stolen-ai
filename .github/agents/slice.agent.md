@@ -36,6 +36,14 @@ When feedback is provided alongside previous stories:
 - If the Feature implies a **new project/repo with no existing CI/CD**, the first story's `briefMarkdown` must note that CI/CD setup is included (folded into the first story, never standalone)
 - For named patterns and anti-patterns, consult `docs/feature-decomposition.md`
 
+## Decomposition Effectiveness Check
+
+Before finalizing output, validate that **no two stories declare overlapping files** in their suggested approach sections. If two stories would both modify the same file, either:
+1. Merge them into one story, or
+2. Restructure so each story owns exclusive file boundaries
+
+This ensures stories remain independently executable without merge conflicts when parallelized.
+
 ## Output Format
 
 Produce a JSON array matching `schemas/stories-output.schema.json`:
