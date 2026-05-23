@@ -14,7 +14,7 @@ attribution: >
 
 ## Entry Point
 
-You receive a **task** from the plan-story plan (`schemas/plan-output.schema.json`):
+You receive a **task** from the plan-story plan (`../../schemas/plan-output.schema.json`, relative to this file):
 
 ```json
 {

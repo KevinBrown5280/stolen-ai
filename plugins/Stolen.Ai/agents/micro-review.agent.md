@@ -46,10 +46,10 @@ You will receive:
 ## Doc Hints
 
 While reviewing the diff, note any implications for agent-facing documentation. Emit a `docHints` entry when you observe:
-- A new domain term used but absent from `docs/glossary.md`
-- A decision that contradicts or extends the decisions table in `docs/decisions.md`
-- A pattern that contradicts or extends `docs/governance.md` rules
-- A new surface/capability that should appear in `docs/agent-surface-selection.md`
+- A new domain term used but not defined in project documentation
+- A decision that contradicts or extends existing architectural decisions
+- A pattern that contradicts or extends `../docs/governance.md` rules (relative to this file)
+- A new surface/capability that should be documented
 
 Keep hints terse (one sentence each). Omit `docHints` entirely (or use `[]`) when nothing is relevant. These are signals, not commands — a human will decide whether to act.
 

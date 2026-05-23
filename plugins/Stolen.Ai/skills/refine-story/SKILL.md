@@ -54,4 +54,4 @@ Before producing final output, self-check:
 - [ ] Every task has enough detail for a TDD agent to execute without asking questions
 - [ ] Dependencies form a DAG (no circular deps)
 - [ ] Task sizes are 2-4 hours (split if larger, merge if trivially small)
-- [ ] Output matches `schemas/plan-output.schema.json`
+- [ ] Output matches `../../schemas/plan-output.schema.json` (relative to this file)

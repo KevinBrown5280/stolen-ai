@@ -25,7 +25,6 @@ AI-assisted ADO workflows. Two pipelines: Plan Feature (Feature → Stories) and
 
 ## When Modifying This Repo
 
-- Don't add MCP (Decision 18)
 - Don't let agents write to ADO directly (Decision 2, governance.md)
 - New AI capabilities: check `docs/agent-surface-selection.md` for which surface to use
 - Scripts validate schema before executing — keep schemas and scripts in sync

@@ -34,7 +34,8 @@ When feedback is provided alongside previous stories:
 - Prefer thin vertical slices over horizontal layers
 - Target: Stories completable in 1-3 days by a single dev
 - If the Feature implies a **new project/repo with no existing CI/CD**, the first story's `briefMarkdown` must note that CI/CD setup is included (folded into the first story, never standalone)
-- For named patterns and anti-patterns, consult `docs/feature-decomposition.md`
+- For named patterns and anti-patterns, consult `../docs/feature-decomposition.md` (relative to this file)
+- For the authoritative Story structure and brief format, read `../docs/story-template.md` (relative to this file)
 
 ## Decomposition Effectiveness Check
 
@@ -46,7 +47,7 @@ This ensures stories remain independently executable without merge conflicts whe
 
 ## Output Format
 
-Produce a JSON array matching `schemas/stories-output.schema.json`:
+Produce a JSON array matching `../schemas/stories-output.schema.json` (relative to this file):
 
 ```json
 [
