@@ -1,5 +1,6 @@
 .vscode/
 output/
 metrics/
+specs/
 NEXT-SESSION.md
 *.tmp
