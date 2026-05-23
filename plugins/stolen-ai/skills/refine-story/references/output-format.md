@@ -18,6 +18,7 @@ When grilling is complete, produce JSON matching `schemas/plan-output.schema.jso
       "rationale": "Balances security with UX; matches industry standard"
     }
   ],
+  "openQuestions": [],
   "tasks": [
     {
       "id": "add-reset-token-model",

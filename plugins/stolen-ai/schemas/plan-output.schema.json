@@ -5,6 +5,11 @@
   "type": "object",
   "required": ["storyId", "storyTitle", "tasks", "decisions"],
   "properties": {
+    "openQuestions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Uncertainties the grill could not fully resolve (e.g., needs DBA input, awaiting vendor confirmation). Empty array if everything is locked."
+    },
     "storyId": {
       "type": "string",
       "description": "ADO Story work item ID"

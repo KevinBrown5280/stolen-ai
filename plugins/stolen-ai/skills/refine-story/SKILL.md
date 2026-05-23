@@ -28,6 +28,10 @@ You will receive:
 
 Skip categories where the brief already provides a clear answer. If a question can be answered by exploring the codebase, explore the codebase instead of asking.
 
+## API/Library Verification
+
+If the proposed approach introduces a library or external API not already used in the codebase, verify the API surface against live documentation before locking the decision. Check package manifests (package.json, .csproj, requirements.txt, etc.) — if the dependency isn't there, it's new. Use `mcp_context7_query-docs` or `fetch` to confirm that methods, signatures, and patterns actually exist in the current version.
+
 ## Tracer Bullet Detection
 
 During the **Dependencies** category, ask: "Does this Story touch any integration or architectural layer that hasn't been proven in this codebase before?" (e.g., new external API, new protocol, new infrastructure component.)
@@ -46,6 +50,7 @@ If a tracer bullet is needed:
 - Devs may over-engineer. Push for the simplest approach that satisfies the AC.
 - "I'll figure it out later" is not a locked decision — press for specifics.
 - If the dev identifies risk that invalidates the Story's AC, surface it — don't silently work around it.
+- Don't hide uncertainties. If something can't be fully resolved during the grill (needs DBA input, vendor confirmation, etc.), capture it in `openQuestions` in the output — don't silently drop it or pretend it's decided.
 - Task dependencies matter for parallel execution. Always ask: "Can anything here run in parallel?"
 
 ## Validation
