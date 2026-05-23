@@ -75,19 +75,20 @@ Reviewed against:
 - **Waves not waterfalls** (P7) — DAG-based parallelism in dev workflow
 - **Machine-verifiable contracts** — JSON schemas tighter than the template's markdown conventions
 - **Cost discipline** — "AI = brain, scripts = hands" is concrete; template only discusses philosophically
+- **Agent context file** — `.github/copilot-instructions.md` codifies design principles + conventions
+- **Retrospectives** — `docs/retrospective-template.md` with structured post-wave reflection + metrics recording
+- **Evaluation framework** — `docs/metrics.md` tracks 4 dimensions (first-pass acceptance, rework cycles, grill efficiency, escaped defects) with JSONL schema
+- **Governance as policy** — `docs/governance.md` standalone doc with safety rules, operational boundaries, and enforcement mechanisms
+- **Epic decomposition guide** — `docs/feature-decomposition.md` documents slice patterns (Config→Core→Integration→UX, Behavior→Data→Operations)
+- **Agent surface selection** — `docs/agent-surface-selection.md` with decision matrix, selection rules, and anti-patterns
+- **Shared vocabulary** — `docs/glossary.md` defines 12 terms (grill, slice, brief, persist, micro-review, drift, checkpoint, surface, contract, DAG, orchestrator, tracer bullet)
 
 ### Gaps to Close
 
 | Gap | What the template has | Action |
 |-----|----------------------|--------|
-| Agent context file | `CLAUDE.md`, `.github/copilot-instructions.md`, `STYLE.md` — persistent agent instructions | Add a `copilot-instructions.md` codifying design principles + conventions |
-| Retrospectives | `docs/retrospective-template.md` — structured post-wave reflection | Add a retro mechanism (even lightweight) |
-| Evaluation framework | 8 dimensions: escaped defects, rework rate, spec quality, autonomy progression | Pick 3-4 dimensions and start tracking |
-| Governance as policy | Safety constraints documented as standalone architecture | Extract from PLAN.md decisions into a dedicated doc |
-| Epic decomposition guide | `docs/epic-decomposition-example.md` | Document slice patterns for onboarding |
-| Agent surface selection | When to use CLI vs IDE vs chat vs cloud | Document the skill=interactive / agent=autonomous decision |
-| Shared vocabulary | Explicit glossary preventing drift (P11) | Define "grill," "slice," "persist," "brief," "micro-review" for newcomers |
 | Issue template | Structured fields: scope, file ownership, negative constraints | Consider an ADO work item template mirroring their `agentic-story.md` |
+| Lift vs. drag measurement | Before/after comparison proving extensions improve outcomes | Run same scenario with/without skills, compare (requires end-to-end data) |
 
 ### Philosophical Differences (intentional)
 
@@ -113,10 +114,8 @@ Reviewed against:
 6. Feedback/revision loop for slice refinement — template has no equivalent
 
 **Biggest gaps to close (priority order):**
-1. Add a `copilot-instructions.md` — codify design principles so any agent grounding on the repo immediately knows the rules
-2. Add a retrospective mechanism — even a simple template run after each end-to-end test
-3. Formalize measurement — pick 3-4 of their 8 dimensions (escaped defects, first-pass acceptance rate, rework rate) and track them
-4. Document governance as policy — safety patterns are great but live only in PLAN.md decisions; extract to standalone doc agents can reference
+1. ADO work item template — structured fields mirroring `agentic-story.md` (low priority, "Consider")
+2. Lift vs. drag measurement — requires end-to-end runs to generate baseline comparison data
 
 ### AX Stack Relevance (May 2026)
 
@@ -127,7 +126,7 @@ From [The AX Stack: What's Fixed, Where You Can Win](https://developer.microsoft
 | Zero-sum context window | Addressed — progressive disclosure keeps skills minimal |
 | Discovery | Addressed — clear naming (`po-grill`, `slice`, `dev-grill`) + explicit frontmatter triggers |
 | Selection | Addressed — skill/agent separation means correct tool type is invoked per task |
-| Quality (lift vs. drag) | **Gap** — no before/after measurement proving skills improve outcomes |
+| Quality (lift vs. drag) | **Partial** — `docs/metrics.md` framework exists; needs end-to-end runs to generate comparison data |
 | Composition | Low risk now (small set), relevant when scaling to other teams |
 
 **Takeaway:** When formalizing measurement (gap #3 above), use the AX "lift vs. drag" framing — run same scenario with/without extensions, compare outcomes.
