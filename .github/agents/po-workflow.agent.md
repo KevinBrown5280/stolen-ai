@@ -71,7 +71,7 @@ scripts/po-workflow/post-stories.ps1 -InputFile output/{feature-id}/stories.json
 Report the created Story IDs and links back to the user.
 
 ### Step 6: Record Metrics
-Append a single JSON line to `output/metrics.jsonl` (create if missing). You have all the data:
+Append a single JSON line to `metrics/metrics.jsonl` (create if missing). You have all the data:
 
 ```json
 {
@@ -94,7 +94,7 @@ Use `execute` to append the line. Validate against `schemas/metrics-entry.schema
 
 ### Step 7: Retrospective Nudge
 After posting, remind the user:
-> "Consider filling out a retrospective: copy `docs/retrospective-template.md` to `output/{feature-id}/retro.md` and capture what worked, what didn't, and adjustments for next time. Metrics for this run have been saved to `output/metrics.jsonl`."
+> "Consider filling out a retrospective: copy `docs/retrospective-template.md` to `output/{feature-id}/retro.md` and capture what worked, what didn't, and adjustments for next time. Metrics for this run have been saved to `metrics/metrics.jsonl`."
 
 ## Rules
 

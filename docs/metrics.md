@@ -13,7 +13,7 @@ Formalized evaluation for StolenAi workflows. Tracks whether the system improves
 
 ## How to Record
 
-Both orchestrator agents (`po-workflow.agent.md`, `dev-workflow.agent.md`) **automatically append** an entry to `output/metrics.jsonl` as their penultimate step — no human action required. The agent has observed every number (grill questions, revision rounds, acceptance counts) by the time it reaches the metrics step.
+Both orchestrator agents (`po-workflow.agent.md`, `dev-workflow.agent.md`) **automatically append** an entry to `metrics/metrics.jsonl` as their penultimate step — no human action required. The agent has observed every number (grill questions, revision rounds, acceptance counts) by the time it reaches the metrics step.
 
 `escapedDefects` starts at 0 and is manually incremented if an issue surfaces post-completion.
 
@@ -64,7 +64,7 @@ Both orchestrator agents (`po-workflow.agent.md`, `dev-workflow.agent.md`) **aut
 
 ## Analysis
 
-Periodically (weekly or after 5+ runs), review `output/metrics.jsonl` for:
+Periodically (weekly or after 5+ runs), review `metrics/metrics.jsonl` for:
 
 1. **Acceptance trend** — `storiesAcceptedFirstPass / storiesProposed` over time. Rising = skill/schema improving.
 2. **Rework trend** — `sliceRevisions` or `planRevisions` average. Falling = grill quality improving.
@@ -90,11 +90,11 @@ To formally evaluate a skill/agent change:
 | **Change under test** | Description of skill/agent/schema change |
 | **Hypothesis** | "Reduces rework by X%" or "Increases first-pass by Y%" |
 | **Scope** | Which workflow (PO/Dev), which Feature/Story types |
-| **Baseline** | Historical average from `output/metrics.jsonl` for matching scope |
+| **Baseline** | Historical average from `metrics/metrics.jsonl` for matching scope |
 
 #### 2. Collect Baseline (minimum 3 runs)
 
-Run the workflow **without** the change on comparable Features/Stories. Record entries in `output/metrics.jsonl`. Minimum 3 runs to establish variance. Same Feature area preferred for controlled comparison.
+Run the workflow **without** the change on comparable Features/Stories. Record entries in `metrics/metrics.jsonl`. Minimum 3 runs to establish variance. Same Feature area preferred for controlled comparison.
 
 If historical entries already exist for the scope, use those as baseline (no need to re-run without the change).
 

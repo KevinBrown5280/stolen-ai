@@ -23,7 +23,7 @@
 
 ## Metrics (required)
 
-Record these for every run. Append the corresponding entry to `output/metrics.jsonl` (schema: `schemas/metrics-entry.schema.json`).
+Record these for every run. Append the corresponding entry to `metrics/metrics.jsonl` (schema: `schemas/metrics-entry.schema.json`).
 
 | Dimension | Metric | Value |
 |-----------|--------|-------|

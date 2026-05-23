@@ -17,7 +17,7 @@ It does NOT add value at the task level because tasks within a single story are 
 
 ## Graduated Agent Autonomy
 
-**Trigger:** Sustained metrics data in `output/metrics.jsonl` justifying removal of human gates.
+**Trigger:** Sustained metrics data in `metrics/metrics.jsonl` justifying removal of human gates.
 
 | Tier | Behaviour | Unlock Criteria |
 |------|-----------|-----------------|

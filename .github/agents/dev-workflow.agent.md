@@ -76,7 +76,7 @@ Collect all `docHints` from micro-review results across all phases. If any exist
 If no `docHints` were collected across all phases, skip this step silently.
 
 ### Step 8: Record Metrics
-Append a single JSON line to `output/metrics.jsonl` (create if missing). You have all the data:
+Append a single JSON line to `metrics/metrics.jsonl` (create if missing). You have all the data:
 
 ```json
 {
@@ -98,7 +98,7 @@ Use `execute` to append the line. Validate against `schemas/metrics-entry.schema
 
 ### Step 9: Retrospective Nudge
 After completion, remind the user:
-> "Consider filling out a retrospective: copy `docs/retrospective-template.md` to `output/{story-id}/retro.md` and capture what worked, what didn't, and adjustments for next time. Metrics for this run have been saved to `output/metrics.jsonl`."
+> "Consider filling out a retrospective: copy `docs/retrospective-template.md` to `output/{story-id}/retro.md` and capture what worked, what didn't, and adjustments for next time. Metrics for this run have been saved to `metrics/metrics.jsonl`."
 
 ## Rules
 

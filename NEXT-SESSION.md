@@ -1,70 +1,79 @@
 Read PLAN.md and README.md in C:\TeamCity\Git\StolenAi for full context.
 
-This is an AI-assisted workflow system for ADO teams. The PO workflow has been tested step-by-step.
+This is an AI-assisted workflow system for ADO teams. **Re-test pass after recent changes** — prior `output/` artifacts (522809, 744719, 744812) are from earlier runs; clear or compare as needed.
 
 ## ADO Details
 - Org: wtw-bda-outsourcing-product
 - Project: BenefitConnect
+- Test Feature ID: **744719** (used as the working example throughout)
 
 ## Test the PO Workflow Pipeline
 
-### 1. Test fetch-feature.ps1
+### 1. Re-test fetch-feature.ps1
 ```powershell
 .\scripts\po-workflow\fetch-feature.ps1 -FeatureId 744719 -Org "wtw-bda-outsourcing-product" -Project "BenefitConnect"
 ```
-- Confirm: returns valid JSON with id, title, description, acceptanceCriteria, state, areaPath, iterationPath
-- Fix any issues before proceeding
+- Confirm: returns valid JSON with `id`, `title`, `description`, `acceptanceCriteria`, `state`, `areaPath`, `iterationPath`
+- Compare against `output/744719/` baseline if helpful; fix any regressions before proceeding
 
-### 2. Dry-run po-grill skill
+### 2. Re-run po-grill skill
 Feed the fetched Feature JSON to the po-grill skill interactively. Answer grill questions until it produces a slice-ready summary.
 - Confirm: skill asks clarifying questions, converges to a structured summary suitable for slicing
+- Save grill output to `output/744719/grill-summary.md` (overwrite prior)
 
-### 3. Test slice agent
-Feed the grill output to the slice agent. It should produce a JSON array matching `schemas/stories-output.schema.json`.
-- Confirm: valid JSON, no duplicate keys, all required fields (title, description, acceptanceCriteria, briefMarkdown)
-- Save output to `output/522809/stories.json`
+### 3. Re-run slice agent
+Feed the grill summary to the slice agent. It should produce a JSON array matching `schemas/stories-output.schema.json`.
+- Confirm: valid JSON, no duplicate keys, all required fields (`title`, `description`, `acceptanceCriteria`, `briefMarkdown`)
+- Save output to `output/744719/stories.json` (overwrite prior)
 
-### 4. Test post-stories.ps1 in DryRun mode
+### 4. Re-run post-stories.ps1 in DryRun mode
 ```powershell
-.\scripts\po-workflow\post-stories.ps1 -InputFile output/522809/stories.json -ParentId 522809 -Org "wtw-bda-outsourcing-product" -Project "BenefitConnect" -DryRun
+.\scripts\po-workflow\post-stories.ps1 -InputFile output/744719/stories.json -ParentId 744719 -Org "wtw-bda-outsourcing-product" -Project "BenefitConnect" -DryRun
 ```
-- Confirm: schema validation passes, stories-review.md generated in same directory as input
+- Confirm: schema validation passes, `output/744719/stories-review.md` regenerated
 - Review stories-review.md for quality
 
-### 5. Test feedback loop
-Provide per-story feedback and re-invoke slice agent with previous stories + feedback (revision mode).
-- Confirm: slice agent preserves unchanged stories, applies feedback precisely
+### 5. Exercise the feedback loop end-to-end
+This has been built but never exercised on real data.
+- Create `output/744719/feedback.md` with per-story feedback (mark some stories "keep", others "revise: …", optionally "reject")
+- Re-invoke the slice agent in revision mode with `stories.json` + `feedback.md`
+- Confirm: approved stories are byte-identical, only the targeted stories change, no re-rolling of unchanged work
+- Re-run step 4 to regenerate `stories-review.md`
 
 ## After PO Workflow Passes
 
 ### 6. ADO Attachment API
-post-stories.ps1 uses `az boards work-item relation add --relation-type AttachedFile` to attach .md briefs.
-This likely doesn't work (AttachedFile may need a REST upload first).
-- Test: try posting a story to a scratch Feature and attaching a brief
-- If it fails: switch to `az devops invoke` REST call or two-step (upload attachment, then link)
+post-stories.ps1 uses `az boards work-item relation add --relation-type AttachedFile` to attach .md briefs. **Still untested.**
+This likely doesn't work as-is (AttachedFile may require a REST upload first).
+- Test: post one story to a scratch Feature and try the attach step
+- If it fails: switch to `az devops invoke` REST call, or two-step (upload attachment via REST, then link)
 
-### 7. End-to-end PO Workflow (real post)
+### 7. End-to-end PO Workflow (real post to ADO)
 Pick a NEW Feature (not Closed) and run the full flow through to actual ADO posting:
-- fetch → grill → slice → review → post
+- fetch → grill → slice → review → post (no `-DryRun`)
 - Verify: Stories created, linked to parent Feature, .md briefs attached
+- Capture metrics entry in `metrics/metrics.jsonl` per `schemas/metrics-entry.schema.json`
 
-### 8. Test Dev Workflow Side
-- Test fetch-story.ps1 against one of the stories created above
-- Dry-run dev-grill with the fetched story
-- Test persist-plan.ps1 (spec file creation, commit, ADO discussion post)
+### 8. Re-validate Dev Workflow Side
+Prior run produced `output/744812/plan.json` and `specs/document-history-exclusion/744812.md`, but scripts/skills have changed since.
+- Re-run `fetch-story.ps1` against Story 744812 (or a Story created in step 7); confirm output shape and that the brief attachment is read correctly
+- Dry-run dev-grill with the fetched story; confirm it converges to a task DAG matching `schemas/plan-output.schema.json`
+- Re-run `persist-plan.ps1` and verify all three actions (spec file write, git commit, ADO discussion post) still succeed atomically
 
-### 9. Wire TDD Skill
-- Integrate existing `tdd` skill into dev-workflow.agent.md
-- Ensure task breakdown from dev-grill feeds into TDD loop correctly
+### 9. Wire TDD Skill into dev-workflow
+- Add an explicit reference/invocation of the existing `tdd` skill in `.github/agents/dev-workflow.agent.md` (currently absent)
+- Confirm task breakdown from dev-grill (the `plan.json` task list) feeds into the TDD loop one task at a time, respecting the dependency DAG
+- Confirm micro-review.agent.md is invoked after each task and findings pause the loop on drift
 
 ---
 
-## Agentic-Agile Comparison (May 2026)
+## Agentic-Agile & AX Stack Review (May 2026)
 
-Reviewed against:
+Single-section review of StolenAi against the full referenced material:
 - [Agentic-Agile: Why Agent Development Needs Agile (Not Just Prompts)](https://developer.microsoft.com/blog/agentic-agile-why-agent-development-needs-agile-not-just-prompts) — introductory blog post by Daniel Epstein (Microsoft PTS)
 - [Agentic-Agile Manifesto](https://github.com/microsoft/agentic-agile-template/blob/main/MANIFESTO.md) — 5 values, 13 principles
 - [microsoft/agentic-agile-template](https://github.com/microsoft/agentic-agile-template) — starter repo with agent context files, issue templates, docs
+- [The AX Stack: What's Fixed, Where You Can Win](https://developer.microsoft.com/blog/the-ax-stack-whats-fixed-where-you-can-win) — Waldek Mastykarz (Agent Experience measurement: discovery, selection, quality, composition, lift vs. drag)
 
 ### Already Aligned / Ahead
 
@@ -93,7 +102,17 @@ Reviewed against:
 |-----------|----------------------|-----------|
 | Tracker | GitHub Issues + Projects | Azure DevOps (enterprise) |
 | Agent autonomy | Agents earn autonomy, eventually create issues | Conservative — agents never touch ADO directly (see `docs/governance.md` § Graduated Agent Autonomy for future tiers) |
-| MCP | `mcp.json` included | No custom MCP; uses Microsoft Learn + Context7 MCPs for docs/library lookups. Custom MCP excluded for PoC (Decision 18) |
+| MCP | Off-the-shelf `mcp.json` (github, filesystem, memory) | No MCP wired in scripts/agents. Skills may use Microsoft Learn + Context7 MCPs in-session for docs/library lookups. Custom MCP excluded for PoC (Decision 18) |
+
+### Manifesto Values Mapping (5 values)
+
+| Value | StolenAi Status |
+|---|---|
+| V1 Specs/contracts over open-ended prompts | ✅ Grill-first + JSON schemas (`schemas/`) |
+| V2 Human-agent partnership over one-directional delegation | ✅ Human checkpoints at script/AI boundary |
+| V3 Parallel independence over sequential handoffs | Partial — DAG phases *within* a story; cross-story parallelism by independent devs not yet addressed (see P3 below) |
+| V4 Built-in governance over bolted-on compliance | ✅ `docs/governance.md` standalone policy |
+| V5 Continuous measurement over post-hoc assessment | Partial — `docs/metrics.md` defines protocol; no baseline data yet |
 
 ### Assessment
 
@@ -114,7 +133,20 @@ From [The AX Stack: What's Fixed, Where You Can Win](https://developer.microsoft
 | AX Concept | StolenAi Status |
 |---|---|
 | Zero-sum context window | Addressed — progressive disclosure keeps skills minimal |
-| Discovery | Addressed — clear naming (`po-grill`, `slice`, `dev-grill`) + explicit frontmatter triggers |
-| Selection | Addressed — skill/agent separation means correct tool type is invoked per task |
-| Quality (lift vs. drag) | Addressed — protocol in `docs/metrics.md`; `treatment` field in schema. Blocked on baseline data (need ≥3 runs). |
-| Composition | Low risk now (small set), relevant when scaling to other teams |
+| Discovery | Baseline coverage via agentskills.io frontmatter triggers; not measured |
+| Selection | Skill/agent separation is structural; not measured whether the correct surface is invoked per task |
+| Quality (lift vs. drag) | Protocol designed in `docs/metrics.md` (`treatment` field in schema); awaiting ≥3 runs for baseline. **Not yet addressed in practice.** |
+| Composition | Skills/agents run alongside Copilot built-ins + any user-installed plugins. Risk applies today, not just at scale — unmeasured. |
+
+### Not Yet Addressed
+
+Gaps from the manifesto and template worth tracking:
+
+- **P3 (parallel partnerships across multiple humans+agents)** — StolenAi is single-developer-with-agents. The template assumes a *team* of humans each running their own agentic swarms in the same codebase. Cross-developer coordination (file ownership across concurrent stories) is out of scope today.
+- **P10 (autonomy earned through evidence)** — `docs/governance.md` describes graduated autonomy tiers, but there is no measurement-gated promotion path. Promotions are currently manual/policy-driven, not evidence-driven.
+- **P13 (budget for the full cycle)** — `plan-output.schema.json` tracks implementation tasks; it does not separately budget review, rework, or integration time. Micro-review + retros imply this but don't quantify it.
+- **Issues-first / spec-in-issue divergence** — Template mandates "no work without an issue; spec lives in the issue." StolenAi treats ADO Stories as the issue equivalent, but the actual spec (dev-grill output) persists locally as `specs/{feature}/*.md`, not back into ADO. Tradeoff: lower ADO noise + token cost vs. reduced discoverability for non-dev stakeholders.
+- **CI/CD as Story 1** — Template makes this a mandate ("validation infrastructure is the first story implemented, not the last"). StolenAi's slice agent *suggests* CI/CD when no pipeline exists — softer enforcement. Consider promoting to a slice-time hard check.
+- **Originating Prompt capture** — Template's issue template has an explicit field for the originating human prompt to feed retros. StolenAi doesn't capture this. Easy add to `fetch-story.ps1` brief or the grill summary.
+- **Per-model instruction splits (CLAUDE.md / STYLE.md)** — Template ships separate files for Claude vs Copilot vs style conventions. StolenAi has one `copilot-instructions.md`. Fine for the PoC's single-model assumption; revisit when expanding model coverage.
+- **8-dimension evaluation framework** — Template's `docs/evaluation-framework.md` uses 8 dimensions; `docs/metrics.md` uses 4 (first-pass acceptance, rework cycles, grill efficiency, escaped defects). Either document why 4 is sufficient for PoC, or close the gap.
