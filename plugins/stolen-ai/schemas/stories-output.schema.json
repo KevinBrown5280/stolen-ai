@@ -9,11 +9,11 @@
     "properties": {
       "title": {
         "type": "string",
-        "description": "User Story title"
+        "description": "User Story title. No backticks or markdown — plain text only."
       },
       "description": {
         "type": "string",
-        "description": "High-level what/why (shows in ADO description field)"
+        "description": "High-level what/why (shows in ADO description field). No backticks or markdown — plain text or basic HTML only."
       },
       "acceptanceCriteria": {
         "type": "string",

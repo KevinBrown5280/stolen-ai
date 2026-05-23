@@ -119,6 +119,11 @@ $areaPath = $parent.fields.'System.AreaPath'
 $iterationPath = $parent.fields.'System.IterationPath'
 $serviceLine = $parent.fields.'Tas.ServiceLine'
 
+if ([string]::IsNullOrWhiteSpace($serviceLine)) {
+    Write-Error "Parent Feature $ParentId has no Tas.ServiceLine value set. This is a required field."
+    exit 1
+}
+
 foreach ($story in $stories) {
     # Build description with negative constraints appended
     $fullDescription = $story.description
@@ -127,7 +132,7 @@ foreach ($story in $stories) {
         $fullDescription += "`n`n**Negative Constraints:**`n$ncList"
     }
 
-    # Create the User Story (without multiline AC field to avoid argument parsing issues)
+    # Create the User Story (AC set via REST below due to multiline content)
     $item = $null
     try {
         $item = az boards work-item create `
@@ -136,10 +141,7 @@ foreach ($story in $stories) {
             --description $fullDescription `
             --org $orgUrl `
             --project $Project `
-            --fields "System.AreaPath=$areaPath" `
-                     "System.IterationPath=$iterationPath" `
-                     "Tas.ServiceLine=$serviceLine" `
-                     "Tas.UserStoryType=User Story" `
+            --fields "System.AreaPath=$($areaPath)" "System.IterationPath=$($iterationPath)" "Tas.ServiceLine=$($serviceLine)" "Tas.UserStoryType=User Story" `
             --output json | ConvertFrom-Json
     } catch {
         Write-Warning "Failed to create story: $($story.title)"
@@ -151,8 +153,7 @@ foreach ($story in $stories) {
         continue
     }
 
-    # Update with multiline Acceptance Criteria via REST API
-    # AC is an HTML field — convert newlines to <br> so they render correctly
+    # Update Acceptance Criteria via REST API (multiline content needs HTML conversion)
     try {
         $acHtml = $story.acceptanceCriteria -replace "`r`n", "<br>" -replace "`n", "<br>"
         $patchBody = ConvertTo-Json -Depth 3 -InputObject @(
@@ -203,7 +204,12 @@ foreach ($story in $stories) {
     Write-Host "Created Story #$($item.id): $($story.title)"
 }
 
-# Post slice summary as a Discussion comment on the parent Feature
+# Post slice summary as a Discussion comment on the parent Feature (only if stories were created)
+if ($results.Count -eq 0) {
+    Write-Error "No stories were created successfully. Skipping summary comment."
+    exit 1
+}
+
 $commentHtml = "<h3>&#x1F4CB; Stories sliced from this Feature</h3><ul>"
 foreach ($r in $results) {
     $commentHtml += "<li><a href=`"$orgUrl/$Project/_workitems/edit/$($r.id)`">#$($r.id)</a> — $($r.title)</li>"
