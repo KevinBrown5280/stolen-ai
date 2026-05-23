@@ -33,7 +33,7 @@ Only loaded when editing `.agent.md` or `SKILL.md` files.
 
 ## Tool Access Rules
 - Orchestrator agents: `read`, `execute`, `agent`
-- Sub-agents (slice, micro-review): `read` only (+ `search` for review)
+- Sub-agents (slice-feature, micro-review): `read` only (+ `search` for review)
 - Skills: inherit session tools (no restriction needed)
 
 ## Full reference: `docs/agent-surface-selection.md`

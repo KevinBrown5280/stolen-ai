@@ -1,6 +1,6 @@
 # Feature Decomposition Guide
 
-How StolenAi slices Features into Stories. Reference for onboarding and for the `slice` agent's decision-making.
+How StolenAi slices Features into Stories. Reference for onboarding and for the `slice-feature` agent's decision-making.
 
 ## The Slicing Model
 

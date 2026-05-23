@@ -5,7 +5,7 @@ Shared vocabulary for StolenAi. Use these terms precisely to prevent drift acros
 | Term | Definition |
 |------|-----------|
 | **Grill** | Interactive questioning phase (via a skill) that fills gaps in a sparse ADO item and locks decisions before downstream work begins. Always mandatory before slice or plan. Invoked via the `refine-feature` or `refine-story` skills. |
-| **Slice** | Decomposing a grilled Feature into independently deliverable User Stories with acceptance criteria, file ownership, and attached briefs. Performed by the `slice` agent. |
+| **Slice** | Decomposing a grilled Feature into independently deliverable User Stories with acceptance criteria, file ownership, and attached briefs. Performed by the `slice-feature` agent. |
 | **Brief** | The `.md` document attached to each Story providing depth beyond ADO fields (context, constraints, edge cases). Generated at slice time; can be regenerated. |
 | **Persist** | Atomic step that writes the spec file, commits to git, and posts an ADO discussion thread — all in one script invocation. |
 | **Micro-review** | Autonomous post-task check that compares the diff against the approved spec. Produces structured findings. Runs after each TDD task completes. |

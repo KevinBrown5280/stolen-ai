@@ -1,6 +1,6 @@
 # Story Template
 
-Authoritative structure for User Stories produced by the `slice` agent and consumed by `post-stories.ps1`, `refine-story`, and `micro-review`. Mirrors structured fields from [agentic-agile-template](https://github.com/microsoft/agentic-agile-template) adapted for ADO.
+Authoritative structure for User Stories produced by the `slice-feature` agent and consumed by `post-stories.ps1`, `refine-story`, and `micro-review`. Mirrors structured fields from [agentic-agile-template](https://github.com/microsoft/agentic-agile-template) adapted for ADO.
 
 ## ADO Fields (posted directly)
 

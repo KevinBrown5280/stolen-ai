@@ -1,5 +1,5 @@
 ---
-name: slice
+name: slice-feature
 description: >
   Slice a grilled Feature into independently deliverable User Stories with
   structured JSON output. Invoked as a sub-agent by plan-feature — produces

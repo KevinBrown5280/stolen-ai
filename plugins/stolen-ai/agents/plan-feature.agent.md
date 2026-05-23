@@ -24,7 +24,7 @@ Continue until the skill signals "Ready for slicing: YES."
 Capture the structured summary output.
 
 ### Step 3: Slice
-Invoke the `slice` agent as a sub-agent. Provide:
+Invoke the `slice-feature` agent as a sub-agent. Provide:
 - The original Feature description
 - The grill summary from Step 2
 
@@ -55,7 +55,7 @@ If the user provides feedback:
    ## Structural
    - {feedback}
    ```
-3. Re-invoke the `slice` agent with:
+3. Re-invoke the `slice-feature` agent with:
    - Original Feature description
    - Grill summary
    - Previous stories JSON

@@ -23,7 +23,7 @@ Human approves before any external write. AI never touches ADO directly — it p
 
 # Manual step-by-step:
 .\scripts\plan-feature\fetch-feature.ps1 -FeatureId 12345 -Org "myorg" -Project "myproject"
-# → refine (interactive) → slice agent produces stories.json
+# → refine (interactive) → slice-feature agent produces stories.json
 .\scripts\plan-feature\post-stories.ps1 -InputFile output/12345/stories.json -ParentId 12345 -Org "myorg" -Project "myproject" -DryRun
 # → review stories-review.md, then run without -DryRun to post
 
@@ -47,7 +47,7 @@ Human approves before any external write. AI never touches ADO directly — it p
   agents/                         # Autonomous + orchestration (.agent.md)
     plan-feature.agent.md         #   Orchestrator: full Feature planning flow
     plan-story.agent.md           #   Orchestrator: full Story planning flow
-    slice.agent.md               #   Sub-agent: Feature → Stories JSON
+    slice-feature.agent.md        #   Sub-agent: Feature → Stories JSON
     micro-review.agent.md        #   Sub-agent: drift detection
 scripts/
   plan-feature/
