@@ -1,5 +1,5 @@
 ---
-name: coder
+name: code-story
 description: >
   Implements code for a single task from the plan-story task plan. Follows
   TDD when testStrategy is present. Scoped strictly to the files and interfaces

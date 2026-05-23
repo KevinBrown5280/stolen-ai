@@ -47,13 +47,13 @@ Group tasks into phases using the DAG dependencies AND file overlap:
 
 For each phase:
 1. Identify all tasks in this phase.
-2. **Spawn Coder sub-agents in parallel** — invoke one `Coder` agent per task simultaneously (multiple `runSubagent` calls in a single batch). Each Coder receives:
+2. **Spawn code-story sub-agents in parallel** — invoke one `code-story` agent per task simultaneously (multiple `runSubagent` calls in a single batch). Each code-story receives:
    - **What to build**: task `description` (this is the implementation spec)
    - **What to test**: task `testStrategy` (these are the behaviors to verify)
    - **Scope**: only the files/interfaces mentioned in the task — do not expand scope
-   - If `testStrategy` starts with "Manual" or is absent → Coder implements directly, no TDD
-   - If `testStrategy` specifies automated tests → Coder runs TDD (skip planning phase, begin at first test)
-3. Wait for all Coder sub-agents in the phase to complete.
+   - If `testStrategy` starts with "Manual" or is absent → code-story implements directly, no TDD
+   - If `testStrategy` specifies automated tests → code-story runs TDD (skip planning phase, begin at first test)
+3. Wait for all code-story sub-agents in the phase to complete.
 4. After each task completes, invoke `micro-review` agent with the diff.
 5. If micro-review reports "drift_detected" with severity "blocking" → pause and show findings to user. User decides: fix or override.
 6. Once all tasks in the phase pass micro-review, move to the next phase.
