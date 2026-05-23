@@ -111,7 +111,7 @@ Single-section review of StolenAi against the full referenced material:
 |---|---|
 | V1 Specs/contracts over open-ended prompts | ✅ Grill-first + JSON schemas (`schemas/`) |
 | V2 Human-agent partnership over one-directional delegation | ✅ Human checkpoints at script/AI boundary |
-| V3 Parallel independence over sequential handoffs | Partial — DAG phases *within* a story; cross-story parallelism by independent devs not yet addressed (see P3 below) |
+| V3 Parallel independence over sequential handoffs | ✅ DAG phases within a story (sub-agent parallelism) + cross-developer coordination via ADO assignment, file ownership in stories, and git branches |
 | V4 Built-in governance over bolted-on compliance | ✅ `docs/governance.md` standalone policy |
 | V5 Continuous measurement over post-hoc assessment | Partial — `docs/metrics.md` defines protocol; no baseline data yet |
 
@@ -143,10 +143,10 @@ From [The AX Stack: What's Fixed, Where You Can Win](https://developer.microsoft
 
 Gaps from the manifesto and template worth tracking:
 
-- **P3 (parallel partnerships across multiple humans+agents)** — StolenAi is single-developer-with-agents. The template assumes a *team* of humans each running their own agentic swarms in the same codebase. Cross-developer coordination (file ownership across concurrent stories) is out of scope today.
-- **P10 (autonomy earned through evidence)** — `docs/governance.md` describes graduated autonomy tiers, but there is no measurement-gated promotion path. Promotions are currently manual/policy-driven, not evidence-driven.
+- **P3 (parallel partnerships across multiple humans+agents)** — ✅ Addressed. Intra-story: sub-agents run in parallel within DAG waves. Cross-developer: multiple devs each run the workflow independently on their assigned stories; conflicts prevented by slice agent's file ownership + ADO story assignment + git branches. No special coordination layer needed — existing tooling handles it.
+- **P10 (autonomy earned through evidence)** — ✅ Intentional divergence. StolenAi's architecture enforces human-as-gatekeeper by design (script/AI boundary). Automated evidence-gated promotion toward autonomous ADO writes is not a goal — the conservative governance stance is a feature, not a gap to close. Metrics data will naturally inform *manual* decisions about loosening guardrails if/when trust warrants it.
 - **P13 (budget for the full cycle)** — `plan-output.schema.json` tracks implementation tasks; it does not separately budget review, rework, or integration time. Micro-review + retros imply this but don't quantify it.
-- **CI/CD as Story 1** — Template makes this a mandate ("validation infrastructure is the first story implemented, not the last"). StolenAi's slice agent *suggests* CI/CD when no pipeline exists — softer enforcement. Consider promoting to a slice-time hard check.
-- **Originating Prompt capture** — Template's issue template has an explicit field for the originating human prompt to feed retros. StolenAi doesn't capture this. Easy add to `fetch-story.ps1` brief or the grill summary.
-- **Per-model instruction splits (CLAUDE.md / STYLE.md)** — Template ships separate files for Claude vs Copilot vs style conventions. StolenAi has one `copilot-instructions.md`. Fine for the PoC's single-model assumption; revisit when expanding model coverage.
+- **CI/CD as Story 1** — ✅ Addressed differently. Template mandates a hard check at slice time (greenfield assumption). StolenAi uses two-layer enforcement: slice agent suggests when no pipeline detected (soft, lacks repo context) → dev-grill enforces via tracer bullet (hard, has full codebase visibility). Enforcement at the phase with actual context is more reliable than a blind mandate at slice time.
+- **Originating Prompt capture** — ✅ N/A. Template captures freeform prompts because that's their only trigger context. StolenAi's trigger is a structured ADO ID; the grill summary already captures all human-supplied clarification beyond what ADO contains — stronger provenance than a raw prompt.
+- **Per-model instruction splits (CLAUDE.md / STYLE.md)** — ✅ Addressed. CLAUDE.md irrelevant (Microsoft shop). STYLE.md is a coding conventions template but nothing auto-loads it — only `copilot-instructions.md` is natively consumed by VS Code Copilot. Target repos own their own conventions via their `copilot-instructions.md`; StolenAi doesn't need to prescribe style. Dev-grill now warns if target repo lacks a `copilot-instructions.md` (added as pre-check step 1 in dev-grill SKILL.md).
 - **8-dimension evaluation framework** — ✅ Resolved. Template's 8 dimensions covered by StolenAi's 4 dimensions + `durationMinutes` + architectural invariants. Rationale documented in `docs/metrics.md` § Dimension Coverage Rationale. Decomposition effectiveness added as slice-time validation rule in `slice.agent.md`.

@@ -18,12 +18,13 @@ You will receive:
 
 ## Procedure
 
-1. Read the Story context
-2. Ask ONE technical question at a time — provide your recommended answer
-3. Explore categories as needed: Architecture → Data → Interface → Build/Deploy → Testing → Risk → Dependencies → Order
-4. Focus on HOW, not WHAT (requirements are locked in the AC)
-5. Track technical decisions as they lock
-6. When resolved, produce JSON output (see [output format](references/output-format.md))
+1. **Pre-check:** Look for `copilot-instructions.md` or `.github/copilot-instructions.md` in the workspace root. If absent, warn: "This repo has no copilot-instructions.md — the agent won't know codebase conventions (naming, patterns, formatting). Consider creating one before implementation begins."
+2. Read the Story context
+3. Ask ONE technical question at a time — provide your recommended answer
+4. Explore categories as needed: Architecture → Data → Interface → Build/Deploy → Testing → Risk → Dependencies → Order
+5. Focus on HOW, not WHAT (requirements are locked in the AC)
+6. Track technical decisions as they lock
+7. When resolved, produce JSON output (see [output format](references/output-format.md))
 
 Skip categories where the brief already provides a clear answer. If a question can be answered by exploring the codebase, explore the codebase instead of asking.
 
