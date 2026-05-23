@@ -4,7 +4,7 @@ description: >
   Check code changes for drift against the implementation spec and ADRs.
   Invoked as a sub-agent after each TDD task — produces a findings JSON,
   no interaction needed.
-model: claude-sonnet-4.6
+model: Claude Opus 4.6 (copilot)
 tools: ['read', 'search']
 ---
 

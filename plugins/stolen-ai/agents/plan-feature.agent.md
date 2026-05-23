@@ -5,7 +5,7 @@ description: >
   slice into User Stories, review with human, and post to ADO. Use when someone
   wants to break down a Feature, prepare stories for the backlog, or says
   "plan this feature" or "process this feature."
-model: claude-sonnet-4.6
+model: GPT-5.4 (copilot)
 tools: ['read', 'execute', 'agent']
 ---
 

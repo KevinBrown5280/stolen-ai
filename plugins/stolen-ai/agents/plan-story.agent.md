@@ -5,7 +5,7 @@ description: >
   approach, plan tasks with dependencies, persist spec + discussion post,
   then TDD with micro-review after each task. Use when a developer picks
   up a story, wants to plan implementation, or says "plan this story."
-model: claude-sonnet-4.6
+model: Claude Opus 4.6 (copilot)
 tools: ['read', 'execute', 'edit', 'agent']
 ---
 
@@ -56,7 +56,8 @@ For each phase:
 3. Wait for all code-story sub-agents in the phase to complete.
 4. After each task completes, invoke `micro-review` agent with the diff.
 5. If micro-review reports "drift_detected" with severity "blocking" → pause and show findings to user. User decides: fix or override.
-6. Once all tasks in the phase pass micro-review, move to the next phase.
+6. Report phase completion to the user: "Phase {n} complete ({x}/{total} tasks done). Starting Phase {n+1}." Include a one-line summary of what each completed task built.
+7. Once all tasks in the phase pass micro-review, move to the next phase.
 
 **File conflict prevention:** Tasks in the same phase MUST touch non-overlapping files (guaranteed by the plan's file ownership). If two tasks share a file, they must be in different phases (sequential).
 

@@ -4,7 +4,7 @@ description: >
   Slice a grilled Feature into independently deliverable User Stories with
   structured JSON output. Invoked as a sub-agent by plan-feature — produces
   JSON matching schemas/stories-output.schema.json, no interaction needed.
-model: claude-sonnet-4.6
+model: Claude Opus 4.6 (copilot)
 tools: ['read']
 ---
 
