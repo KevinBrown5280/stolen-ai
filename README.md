@@ -83,19 +83,10 @@ Both workflow agents remind you at end-of-run.
 - **Nudge enforcement** — warn on missing artifacts, don't hard-block
 - **Progressive disclosure** — skills reference detailed docs on demand
 
-## Status
+## Decisions
 
-See [PLAN.md](PLAN.md) for full decisions, build order, and next steps.
+See [docs/decisions.md](docs/decisions.md) for all locked design decisions.
 
 ## Prior Art & Influences
 
-- [Burke Holland's orchestrator pattern](https://gist.github.com/burkeholland/0e68481f96e94bbb98134fa6efd00436) — sub-agent delegation, parallel phases, never implements itself
-- [Matt Pocock's skills](https://github.com/mattpocock/skills) — grill-me, tdd, write-a-skill patterns
-- [AI Hero (aihero.dev)](https://www.aihero.dev/) — [5 agent skills I use every day](https://www.aihero.dev/5-agent-skills-i-use-every-day), [video walkthrough](https://www.youtube.com/watch?v=-QFHIoCo-Ko)
-- [GitHub Spec Kit](https://github.com/github/spec-kit) — spec → plan → tasks pipeline
-- [Awesome Copilot](https://awesome-copilot.github.com/) — curated patterns and extensions
-- [Agentic-Agile: Why Agent Development Needs Agile (Not Just Prompts)](https://developer.microsoft.com/blog/agentic-agile-why-agent-development-needs-agile-not-just-prompts) — Daniel Epstein (Microsoft PTS)
-- [Agentic-Agile Manifesto](https://github.com/microsoft/agentic-agile-template/blob/main/MANIFESTO.md) — 5 values, 13 principles
-- [microsoft/agentic-agile-template](https://github.com/microsoft/agentic-agile-template) — starter repo with agent context files, issue templates, docs
-- [The AX Stack: What's Fixed, Where You Can Win](https://developer.microsoft.com/blog/the-ax-stack-whats-fixed-where-you-can-win) — Agent Experience (AX) measurement: discovery, selection, quality, lift vs. drag
-- [agentskills.io](https://agentskills.io/) — open standard for portable skills (VS Code, VS 2026, CLI, Cursor, Claude Code)
+See [docs/inspirations.md](docs/inspirations.md) for full sources, what we adopted from each, and alignment analysis.

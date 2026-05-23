@@ -1,6 +1,6 @@
 # Agent Surface Selection
 
-When to use each execution surface in StolenAi. This codifies Decision 19 from PLAN.md into actionable selection criteria.
+When to use each execution surface in StolenAi. This codifies Decision 19 from `docs/decisions.md` into actionable selection criteria.
 
 ## The Three Surfaces
 

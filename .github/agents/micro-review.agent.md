@@ -47,7 +47,7 @@ You will receive:
 
 While reviewing the diff, note any implications for agent-facing documentation. Emit a `docHints` entry when you observe:
 - A new domain term used but absent from `docs/glossary.md`
-- A decision that contradicts or extends the decisions table in `PLAN.md`
+- A decision that contradicts or extends the decisions table in `docs/decisions.md`
 - A pattern that contradicts or extends `docs/governance.md` rules
 - A new surface/capability that should appear in `docs/agent-surface-selection.md`
 

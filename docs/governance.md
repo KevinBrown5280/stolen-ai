@@ -78,15 +78,9 @@ All AI ↔ Script boundaries are governed by JSON Schema:
 
 Agents MUST produce valid JSON against the relevant schema. Scripts MUST validate input before executing.
 
-## Future: Graduated Agent Autonomy
-
-See [roadmap.md](roadmap.md#graduated-agent-autonomy) for the full tier table and unlock criteria.
-
-Currently at **Tier 0** (agent produces JSON → human reviews → script posts). Governance Rule §2 (AI never calls `az devops` directly) remains at all tiers.
-
 ## Doc Maintenance
 
-Agent-facing documentation (glossary, governance, PLAN.md decisions, agent-surface-selection) must stay accurate for agents to produce correct output. Stale context = worse results.
+Agent-facing documentation (glossary, governance, decisions, agent-surface-selection) must stay accurate for agents to produce correct output. Stale context = worse results.
 
 **Policy: signal-then-decide.**
 
@@ -96,7 +90,7 @@ Agent-facing documentation (glossary, governance, PLAN.md decisions, agent-surfa
 
 **What agents watch for:**
 - New domain terms absent from `docs/glossary.md`
-- Decisions that contradict or extend the table in `PLAN.md`
+- Decisions that contradict or extend the table in `docs/decisions.md`
 - Patterns that contradict or extend rules in this file
 - New surfaces/capabilities missing from `docs/agent-surface-selection.md`
 
@@ -115,4 +109,4 @@ This keeps the workflow lightweight for a PoC while still surfacing gaps.
 
 ## Revision
 
-Changes to this policy require updating this file AND the corresponding decision in `PLAN.md`. If a decision here conflicts with PLAN.md, this file wins (it's the extracted, agent-readable form).
+Changes to this policy require updating this file AND the corresponding decision in `docs/decisions.md`. If a decision here conflicts with `docs/decisions.md`, this file wins (it's the extracted, agent-readable form).

@@ -66,3 +66,57 @@ Currently the PO workflow creates full User Stories in ADO (title, description, 
 - All auto-posted items must be tagged `[auto]` for audit trail
 - Metrics pipeline must be running and trustworthy before any tier > 0
 - Governance Rule §2 (AI never calls `az devops` directly) remains at all tiers — scripts still execute CRUD
+
+## Plugin Distribution
+
+**Trigger:** PoC validated end-to-end, team ready to share across repos/workspaces.
+
+When ready to share as an installable plugin (like `adversarial-review@fun-with-copilot`):
+
+### What a plugin needs
+
+```
+plugin.json              # Manifest (name, description, agents[], skills[])
+agents/                  # .agent.md files (or paths in plugin.json)
+skills/                  # SKILL.md directories
+```
+
+Installed via `/plugin install <name>@<marketplace-source>`. Files land in `~/.copilot/installed-plugins/<source>/<plugin>/`.
+
+### Steps to convert StolenAi
+
+1. **Add `plugin.json`** at repo root:
+   ```json
+   {
+     "name": "stolen-ai",
+     "description": "AI-assisted PO and Dev workflows for Azure DevOps teams.",
+     "author": { "name": "Kevin" },
+     "repository": "https://github.com/Benefits-Outsourcing/StolenAi",
+     "license": "MIT",
+     "keywords": ["ado", "po-workflow", "dev-workflow", "tdd", "agile"],
+     "agents": [
+       "./.github/agents/po-workflow.agent.md",
+       "./.github/agents/dev-workflow.agent.md",
+       "./.github/agents/slice.agent.md",
+       "./.github/agents/micro-review.agent.md"
+     ],
+     "skills": ["./.github/skills/"]
+   }
+   ```
+
+2. **Fix script path resolution** — when installed as a plugin, the working directory is the user's workspace, not the plugin folder. Options:
+   - Introduce a variable/convention that resolves to the plugin install directory
+   - Have agents locate scripts via `$env:COPILOT_PLUGIN_DIR` or similar (check what's available at the time)
+   - Duplicate scripts into the user's workspace on first run (messy, avoid)
+
+3. **Choose hosting model**:
+   - **Standalone marketplace source**: `Benefits-Outsourcing/StolenAi` as its own repo
+   - **Multi-plugin repo** (like `fun-with-copilot`): move into `plugins/stolen-ai/` inside a shared repo
+
+4. **Schemas and output** — `schemas/` ships with the plugin. `output/` is always workspace-local (gitignored).
+
+### What does NOT need to change for local dev
+
+- `.github/agents/` and `.github/skills/` still load as workspace agents/skills when working inside the repo
+- Adding `plugin.json` has zero effect on local behavior — it's only consumed by `/plugin install`
+- Both mechanisms coexist: local workspace convention + plugin manifest
