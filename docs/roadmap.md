@@ -120,3 +120,24 @@ Installed via `/plugin install <name>@<marketplace-source>`. Files land in `~/.c
 - `.github/agents/` and `.github/skills/` still load as workspace agents/skills when working inside the repo
 - Adding `plugin.json` has zero effect on local behavior — it's only consumed by `/plugin install`
 - Both mechanisms coexist: local workspace convention + plugin manifest
+
+## Fetch Discussion Comments in fetch-feature.ps1
+
+**Trigger:** Refinement sessions consistently miss context that exists in ADO discussions, or Feature descriptions remain sparse while comments hold the real requirements.
+
+`az boards work-item show --expand all` does NOT return discussion history. It only provides:
+- `commentVersionRef` — a pointer to the latest comment (ID + URL, no text)
+- `System.History` — the text of only the *most recent* discussion entry
+
+Full discussion thread requires a separate REST call to `_apis/wit/workItems/{id}/comments` (API version 7.1-preview.4).
+
+**Implementation:**
+1. After fetching the work item, acquire a token via `az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798`
+2. Call `Invoke-RestMethod` against `{orgUrl}/{project}/_apis/wit/workItems/{id}/comments?api-version=7.1-preview.4`
+3. Map response to `discussions` array: `[{ id, text, createdBy, createdDate }]`
+4. Include in the output JSON alongside existing fields
+
+**Open questions:**
+- Should the script strip HTML from comment text (discussions come back as HTML)?
+- Should it also apply to `fetch-story.ps1`?
+- Token reuse — the `az boards` CLI already authenticates; acquiring a second token adds ~1s latency. Worth caching or restructuring to use REST for the entire fetch?
