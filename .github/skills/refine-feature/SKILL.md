@@ -1,11 +1,11 @@
 ---
-name: po-grill
+name: refine-feature
 description: >
   Sharpen a vague ADO Feature into slice-ready clarity through relentless
   one-at-a-time questioning. Use when the user provides a Feature ID and wants
-  to refine it, prepare for story slicing, resolve ambiguity, or says "grill
+  to refine it, prepare for story slicing, resolve ambiguity, or says "refine
   this feature" — even if they just say "I need to break this down" or "help me
-  think through this Feature" without using the word "grill."
+  think through this Feature" without using the word "refine."
 ---
 
 Grill the user about the ADO Feature they provide until every branch of ambiguity is resolved. Produce a structured summary that the Slice agent can consume directly.

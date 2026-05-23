@@ -75,7 +75,7 @@ $html = $discussionBody `
     -replace '(<li>.*</li>(\r?\n)?)+', '<ul>$0</ul>' `
     -replace "`r`n", "<br>" -replace "`n", "<br>"
 
-$html += "<br><p><em>Posted by dev-workflow • $(Get-Date -Format 'yyyy-MM-dd HH:mm')</em></p>"
+$html += "<br><p><em>Posted by plan-story • $(Get-Date -Format 'yyyy-MM-dd HH:mm')</em></p>"
 
 if ($DryRun) {
     Write-Host "[DryRun] Would post to Story #$($plan.storyId) discussion:"

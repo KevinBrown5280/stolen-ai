@@ -1,20 +1,20 @@
 ---
 name: tdd
 description: >
-  Red-green-refactor TDD loop integrated with the dev-workflow task plan.
+  Red-green-refactor TDD loop integrated with the plan-story task plan.
   Accepts a task's description and testStrategy from the plan output and
   drives implementation through vertical slices. Use when executing a task
   that has automated tests in its testStrategy.
 attribution: >
   Based on TDD principles from Matt Pocock's AI Hero (aihero.dev).
-  Adapted for dev-workflow plan integration.
+  Adapted for plan-story integration.
 ---
 
-# Test-Driven Development (Dev Workflow)
+# Test-Driven Development (Plan Story)
 
 ## Entry Point
 
-You receive a **task** from the dev-workflow plan (`schemas/plan-output.schema.json`):
+You receive a **task** from the plan-story plan (`schemas/plan-output.schema.json`):
 
 ```json
 {
@@ -29,7 +29,7 @@ You receive a **task** from the dev-workflow plan (`schemas/plan-output.schema.j
 - `description` = implementation spec (WHAT to build). This is locked — don't expand scope.
 - `testStrategy` = behaviors to verify (WHAT to test). These are your test cases.
 
-**The planning phase is already complete.** Interface decisions, approach, and scope were locked during dev-grill. Begin at the Tracer Bullet step.
+**The planning phase is already complete.** Interface decisions, approach, and scope were locked during refine-story. Begin at the Tracer Bullet step.
 
 ## Philosophy
 

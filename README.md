@@ -6,31 +6,31 @@ AI-assisted software engineering workflows for Azure DevOps teams.
 
 Two workflows that separate **AI thinking** (expensive) from **script execution** (free):
 
-- **PO Workflow**: Feature → Grill → Slice → Stories in ADO
-- **Dev Workflow**: Story → Grill → Plan → Persist → TDD → Review
+- **Plan Feature**: Feature → Refine → Slice → Stories in ADO
+- **Plan Story**: Story → Refine → Plan → Persist → TDD → Review
 
 Human approves before any external write. AI never touches ADO directly — it produces JSON, scripts do the posting.
 
 ## Quick Start
 
 ```powershell
-# PO: Break a Feature into Stories
-# 1. Invoke po-workflow agent (or run steps manually)
+# Plan Feature: Break a Feature into Stories
+# 1. Invoke plan-feature agent (or run steps manually)
 # 2. Provide ADO Feature ID when prompted
-# 3. Answer grill questions
+# 3. Answer refinement questions
 # 4. Review proposed stories in output/{feature-id}/stories-review.md
 # 5. Approve → stories posted to ADO
 
 # Manual step-by-step:
-.\scripts\po-workflow\fetch-feature.ps1 -FeatureId 12345 -Org "myorg" -Project "myproject"
-# → grill (interactive) → slice agent produces stories.json
-.\scripts\po-workflow\post-stories.ps1 -InputFile output/12345/stories.json -ParentId 12345 -Org "myorg" -Project "myproject" -DryRun
+.\scripts\plan-feature\fetch-feature.ps1 -FeatureId 12345 -Org "myorg" -Project "myproject"
+# → refine (interactive) → slice agent produces stories.json
+.\scripts\plan-feature\post-stories.ps1 -InputFile output/12345/stories.json -ParentId 12345 -Org "myorg" -Project "myproject" -DryRun
 # → review stories-review.md, then run without -DryRun to post
 
-# Dev: Pick up a Story and implement
-# 1. Invoke dev-workflow agent (or run steps manually)
+# Plan Story: Pick up a Story and implement
+# 1. Invoke plan-story agent (or run steps manually)
 # 2. Provide ADO Story ID when prompted
-# 3. Answer technical grill questions
+# 3. Answer technical refinement questions
 # 4. Review task plan
 # 5. Approve → spec persisted, TDD begins
 ```
@@ -40,25 +40,25 @@ Human approves before any external write. AI never touches ADO directly — it p
 ```
 .github/
   skills/                         # Interactive (agentskills.io format)
-    po-grill/SKILL.md            #   Grill PO about a Feature
-    po-grill/references/         #   Output format template
-    dev-grill/SKILL.md           #   Grill Dev about a Story
-    dev-grill/references/        #   Output format + example JSON
+    refine-feature/SKILL.md      #   Refine a Feature for slicing
+    refine-feature/references/   #   Output format template
+    refine-story/SKILL.md        #   Refine a Story for implementation
+    refine-story/references/     #   Output format + example JSON
   agents/                         # Autonomous + orchestration (.agent.md)
-    po-workflow.agent.md          #   Orchestrator: full PO flow
-    dev-workflow.agent.md         #   Orchestrator: full Dev flow
+    plan-feature.agent.md         #   Orchestrator: full Feature planning flow
+    plan-story.agent.md           #   Orchestrator: full Story planning flow
     slice.agent.md               #   Sub-agent: Feature → Stories JSON
     micro-review.agent.md        #   Sub-agent: drift detection
 scripts/
-  po-workflow/
+  plan-feature/
     fetch-feature.ps1            # Read Feature from ADO
     post-stories.ps1             # Validate, dry-run review, or create Stories + attach briefs
-  dev-workflow/
+  plan-story/
     fetch-story.ps1              # Read Story + attached brief
     persist-plan.ps1             # Write spec, commit, post discussion
 schemas/
   stories-output.schema.json     # Contract: slice → post script
-  plan-output.schema.json        # Contract: dev-grill → persist script
+  plan-output.schema.json        # Contract: refine-story → persist script
 output/                           # Transient (gitignored)
   {feature-id}/
     stories.json                 # Slice agent output

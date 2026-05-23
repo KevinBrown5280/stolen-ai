@@ -1,10 +1,10 @@
 ---
-name: po-workflow
+name: plan-feature
 description: >
-  End-to-end PO workflow: fetch an ADO Feature, grill to resolve ambiguity,
-  slice into User Stories, review with human, and post to ADO. Use when a PO
+  End-to-end Feature planning: fetch an ADO Feature, refine to resolve ambiguity,
+  slice into User Stories, review with human, and post to ADO. Use when someone
   wants to break down a Feature, prepare stories for the backlog, or says
-  "run the PO workflow" or "process this feature."
+  "plan this feature" or "process this feature."
 model: claude-sonnet-4.6
 tools: ['read', 'execute', 'agent']
 ---
@@ -14,11 +14,11 @@ You are a workflow coordinator. Guide the user through the PO workflow step by s
 ## Workflow Steps
 
 ### Step 1: Fetch Feature
-Run `scripts/po-workflow/fetch-feature.ps1` with the Feature ID the user provides.
+Run `scripts/plan-feature/fetch-feature.ps1` with the Feature ID the user provides.
 Pass the output as context to Step 2.
 
-### Step 2: Grill
-Invoke the `po-grill` skill. Provide the Feature description from Step 1.
+### Step 2: Refine
+Invoke the `refine-feature` skill. Provide the Feature description from Step 1.
 Continue until the skill signals "Ready for slicing: YES."
 Capture the structured summary output.
 
@@ -34,7 +34,7 @@ Save the output to `output/{feature-id}/stories.json`.
 ### Step 4: Review
 Run the post script in dry-run mode to generate the review file:
 ```
-scripts/po-workflow/post-stories.ps1 -InputFile output/{feature-id}/stories.json -ParentId {feature-id} -Org {org} -Project {project} -DryRun
+scripts/plan-feature/post-stories.ps1 -InputFile output/{feature-id}/stories.json -ParentId {feature-id} -Org {org} -Project {project} -DryRun
 ```
 
 This writes `output/{feature-id}/stories-review.md`. Present it to the user.
@@ -66,7 +66,7 @@ Repeat until the user approves. Maximum 3 rounds — if still not approved, ask 
 ### Step 5: Post
 Once approved, run without -DryRun:
 ```
-scripts/po-workflow/post-stories.ps1 -InputFile output/{feature-id}/stories.json -ParentId {feature-id} -Org {org} -Project {project}
+scripts/plan-feature/post-stories.ps1 -InputFile output/{feature-id}/stories.json -ParentId {feature-id} -Org {org} -Project {project}
 ```
 Report the created Story IDs and links back to the user.
 

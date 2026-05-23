@@ -1,11 +1,11 @@
 ---
-name: dev-grill
+name: refine-story
 description: >
-  Grill a developer about HOW they'll implement a User Story until the approach
+  Refine a developer's implementation approach for a User Story until the approach
   is clear enough to produce a task breakdown with dependencies. Use when the
-  user picks up a story, plans implementation, says "grill this story," or asks
+  user picks up a story, plans implementation, says "refine this story," or asks
   "how should I build this" — even if they just say "I grabbed story 12345,
-  what's my plan?" without using the word "grill."
+  what's my plan?" without using the word "refine."
 ---
 
 Grill the developer about their implementation approach for the User Story provided. Resolve all technical unknowns until you can produce a task breakdown with dependencies.

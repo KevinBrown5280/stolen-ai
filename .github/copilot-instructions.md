@@ -2,7 +2,7 @@
 
 ## Architecture
 
-AI-assisted ADO workflows. Two pipelines: PO (Feature → Stories) and Dev (Story → Code).
+AI-assisted ADO workflows. Two pipelines: Plan Feature (Feature → Stories) and Plan Story (Story → Code).
 
 **Core rule: AI = brain, scripts = hands.** AI produces structured JSON. Scripts do CRUD. Never burn tokens on deterministic I/O.
 

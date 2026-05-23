@@ -32,7 +32,7 @@ When to use each execution surface in StolenAi. This codifies Decision 19 from `
 3. The output quality depends on **eliciting** unstated knowledge
 4. The task is **exploratory** (outcome not predictable from input alone)
 
-Examples: `po-grill` (elicit Feature details), `dev-grill` (lock technical approach), `tdd` (drive implementation with human feedback)
+Examples: `refine-feature` (elicit Feature details), `refine-story` (lock technical approach), `tdd` (drive implementation with human feedback)
 
 ### Use an Agent when:
 1. The task can run to **completion without human input**
@@ -41,7 +41,7 @@ Examples: `po-grill` (elicit Feature details), `dev-grill` (lock technical appro
 4. The task benefits from a **clean context** (no prior conversation noise)
 5. The task is a **sub-step** in a larger workflow
 
-Examples: `slice` (structured input → Stories JSON), `micro-review` (diff + spec → findings), `po-workflow` (orchestrates the full pipeline)
+Examples: `slice` (structured input → Stories JSON), `micro-review` (diff + spec → findings), `plan-feature` (orchestrates the full pipeline)
 
 ### Use a Script when:
 1. The task is **deterministic** (same input → same output)
@@ -73,13 +73,13 @@ Examples: `fetch-feature.ps1` (ADO read), `post-stories.ps1` (ADO write), `persi
 ## How This Maps to the Workflows
 
 ```
-PO Workflow:
-  fetch-feature.ps1  →  po-grill (SKILL)  →  slice (AGENT)  →  post-stories.ps1
+Plan Feature:
+  fetch-feature.ps1  →  refine-feature (SKILL)  →  slice (AGENT)  →  post-stories.ps1
        Script              Skill                 Agent               Script
        [fetch]          [elicit/clarify]      [transform]          [write to ADO]
 
-Dev Workflow:
-  fetch-story.ps1  →  dev-grill (SKILL)  →  persist-plan.ps1  →  tdd (SKILL)  →  micro-review (AGENT)
+Plan Story:
+  fetch-story.ps1  →  refine-story (SKILL)  →  persist-plan.ps1  →  tdd (SKILL)  →  micro-review (AGENT)
        Script             Skill                  Script              Skill             Agent
        [fetch]        [elicit/decide]          [commit/post]     [implement]        [validate]
 ```

@@ -208,7 +208,7 @@ $commentHtml = "<h3>&#x1F4CB; Stories sliced from this Feature</h3><ul>"
 foreach ($r in $results) {
     $commentHtml += "<li><a href=`"$orgUrl/$Project/_workitems/edit/$($r.id)`">#$($r.id)</a> — $($r.title)</li>"
 }
-$commentHtml += "</ul><p><em>Posted by po-workflow • $(Get-Date -Format 'yyyy-MM-dd HH:mm')</em></p>"
+$commentHtml += "</ul><p><em>Posted by plan-feature • $(Get-Date -Format 'yyyy-MM-dd HH:mm')</em></p>"
 
 try {
     $commentBody = @{ text = $commentHtml } | ConvertTo-Json -Depth 2

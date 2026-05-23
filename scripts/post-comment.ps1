@@ -1,6 +1,6 @@
 # Post a markdown file as a Discussion comment on an ADO work item
 # Usage: .\post-comment.ps1 -WorkItemId 12345 -File "grill-summary.md" -Org "myorg" -Project "myproject"
-#        .\post-comment.ps1 -WorkItemId 12345 -File "grill-summary.md" -Org "myorg" -Project "myproject" -Label "po-grill"
+#        .\post-comment.ps1 -WorkItemId 12345 -File "grill-summary.md" -Org "myorg" -Project "myproject" -Label "refine-feature"
 
 param(
     [Parameter(Mandatory)]
@@ -15,7 +15,7 @@ param(
     [Parameter(Mandatory)]
     [string]$Project,
 
-    [string]$Label = "po-workflow"
+    [string]$Label = "plan-feature"
 )
 
 $ErrorActionPreference = "Stop"

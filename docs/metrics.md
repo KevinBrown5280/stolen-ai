@@ -7,13 +7,13 @@ Formalized evaluation for StolenAi workflows. Tracks whether the system improves
 | # | Dimension | Definition | Measured At | Target |
 |---|-----------|-----------|-------------|--------|
 | 1 | First-pass acceptance | Stories or plan accepted by human without edits | Review step (PO: stories-review, Dev: plan review) | ≥ 80% of stories need zero edits |
-| 2 | Rework cycles | Number of revision rounds before human approves | Slice feedback loop / dev-grill iterations | ≤ 1 revision round average |
+| 2 | Rework cycles | Number of revision rounds before human approves | Slice feedback loop / refine-story iterations | ≤ 1 revision round average |
 | 3 | Grill efficiency | Questions asked before reaching slice-ready / plan-ready | End of grill phase | Trending down per Feature area |
 | 4 | Escaped defects | Issues found after posting (re-slice needed, plan divergence, missed AC) | Post-implementation retro | 0 per workflow run (aspirational) |
 
 ## How to Record
 
-Both orchestrator agents (`po-workflow.agent.md`, `dev-workflow.agent.md`) **automatically append** an entry to `metrics/metrics.jsonl` as their penultimate step — no human action required. The agent has observed every number (grill questions, revision rounds, acceptance counts) by the time it reaches the metrics step.
+Both orchestrator agents (`plan-feature.agent.md`, `plan-story.agent.md`) **automatically append** an entry to `metrics/metrics.jsonl` as their penultimate step — no human action required. The agent has observed every number (grill questions, revision rounds, acceptance counts) by the time it reaches the metrics step.
 
 `escapedDefects` starts at 0 and is manually incremented if an issue surfaces post-completion.
 
@@ -130,7 +130,7 @@ Add an entry to the retrospective documenting: change tested, hypothesis, baseli
 | Workflow | Entries | Status |
 |----------|---------|--------|
 | PO | 1 | Collecting — need ≥3 for reliable baseline |
-| Dev | 0 | Not started — pending first full dev-workflow run |
+| Dev | 0 | Not started — pending first full plan-story run |
 
 **Next milestone:** Complete 3 PO workflow runs and 1 Dev workflow run to establish usable baselines.
 

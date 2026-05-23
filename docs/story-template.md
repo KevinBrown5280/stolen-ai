@@ -1,6 +1,6 @@
 # Story Template
 
-Authoritative structure for User Stories produced by the `slice` agent and consumed by `post-stories.ps1`, `dev-grill`, and `micro-review`. Mirrors structured fields from [agentic-agile-template](https://github.com/microsoft/agentic-agile-template) adapted for ADO.
+Authoritative structure for User Stories produced by the `slice` agent and consumed by `post-stories.ps1`, `refine-story`, and `micro-review`. Mirrors structured fields from [agentic-agile-template](https://github.com/microsoft/agentic-agile-template) adapted for ADO.
 
 ## ADO Fields (posted directly)
 
@@ -60,10 +60,10 @@ References to architectural decisions that apply.
 3. Use concrete language: "Does NOT modify admin document views"
 4. Useful for:
    - **micro-review**: verifies no constraint was violated in the diff
-   - **dev-grill**: surfaces boundaries the dev must respect
+   - **refine-story**: surfaces boundaries the dev must respect
    - **scope creep prevention**: clear "stop" signals during implementation
 
 ## Design Notes
 
-- Modeled after [microsoft/agentic-agile-template](https://github.com/microsoft/agentic-agile-template) `agentic-story.md`. Key differences: file ownership deferred (see [roadmap](roadmap.md#file-ownership-story-level)), dependencies omitted (stories are independently deliverable), scope/files captured at task level in `plan-output.schema.json` during dev-grill.
+- Modeled after [microsoft/agentic-agile-template](https://github.com/microsoft/agentic-agile-template) `agentic-story.md`. Key differences: file ownership deferred (see [roadmap](roadmap.md#file-ownership-story-level)), dependencies omitted (stories are independently deliverable), scope/files captured at task level in `plan-output.schema.json` during refine-story.
 - ADO lacks issue templates. Schema validation in `post-stories.ps1` is the enforcement mechanism.

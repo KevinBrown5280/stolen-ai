@@ -5,7 +5,7 @@ Numbered decisions that are **settled** — revisiting requires explicit justifi
 | # | Decision | Choice | Rationale |
 |---|----------|--------|-----------|
 | 1 | Trigger | Human invokes CLI command | No automation/webhooks for PoC |
-| 2 | Input | Existing ADO Feature ID (PO) or Story ID (Dev) | Features already exist in ADO |
+| 2 | Input | Existing ADO Feature ID (plan-feature) or Story ID (plan-story) | Features already exist in ADO |
 | 3 | Grill mandatory | Always grill before slicing | ADO items are typically sparse |
 | 4 | Artifact model | Stories ARE the specs (no monolithic spec file) | Each story is self-contained |
 | 5 | PO output | Stories in ADO + attached .md brief per story | ADO scannable, .md has depth |

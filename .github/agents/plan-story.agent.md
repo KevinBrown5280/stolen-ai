@@ -1,10 +1,10 @@
 ---
-name: dev-workflow
+name: plan-story
 description: >
-  End-to-end Dev workflow: fetch an ADO Story, grill for implementation
+  End-to-end Story planning: fetch an ADO Story, refine for implementation
   approach, plan tasks with dependencies, persist spec + discussion post,
   then TDD with micro-review after each task. Use when a developer picks
-  up a story, wants to plan implementation, or says "run the dev workflow."
+  up a story, wants to plan implementation, or says "plan this story."
 model: claude-sonnet-4.6
 tools: ['read', 'execute', 'edit', 'agent']
 ---
@@ -14,11 +14,11 @@ You are a workflow coordinator. Guide the developer through the Dev workflow ste
 ## Workflow Steps
 
 ### Step 1: Fetch Story
-Run `scripts/dev-workflow/fetch-story.ps1` with the Story ID the user provides.
+Run `scripts/plan-story/fetch-story.ps1` with the Story ID the user provides.
 Pass the output (including attached .md brief) as context to Step 2.
 
-### Step 2: Dev Grill
-Invoke the `dev-grill` skill. Provide:
+### Step 2: Refine Story
+Invoke the `refine-story` skill. Provide:
 - Story fields (title, description, AC) — AC is the contract
 - The attached .md brief — guidance, not gospel
 
@@ -33,7 +33,7 @@ Display the proposed task breakdown to the user:
 Ask: "This is the plan. Approve, edit, or reject?"
 
 ### Step 4: Persist
-Once approved, run `scripts/dev-workflow/persist-plan.ps1` with the plan JSON.
+Once approved, run `scripts/plan-story/persist-plan.ps1` with the plan JSON.
 This writes `specs/{feature}/{story}.md`, commits to branch, and posts to ADO discussion.
 
 ### Step 5: TDD Loop (Phase-Based Parallel Execution)

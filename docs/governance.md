@@ -12,7 +12,7 @@ No agent or script may perform an external write without explicit human approval
 - Posting comments or discussion threads
 - Attaching files to work items
 
-**Enforcement:** Orchestrator agents gate Steps 5 (PO) and 4 (Dev) behind explicit user confirmation. Scripts accept but do not auto-execute destructive operations.
+**Enforcement:** Orchestrator agents gate Steps 5 (Plan Feature) and 4 (Plan Story) behind explicit user confirmation. Scripts accept but do not auto-execute destructive operations.
 
 ### 2. AI Never Touches ADO Directly
 
@@ -73,7 +73,7 @@ No Feature may be sliced, and no Story may be planned, without first completing 
 
 All AI ↔ Script boundaries are governed by JSON Schema:
 - `schemas/stories-output.schema.json` — slice agent → post-stories script
-- `schemas/plan-output.schema.json` — dev-grill → persist-plan script
+- `schemas/plan-output.schema.json` — refine-story → persist-plan script
 - `schemas/metrics-entry.schema.json` — orchestrator → metrics.jsonl
 
 Agents MUST produce valid JSON against the relevant schema. Scripts MUST validate input before executing.
@@ -85,7 +85,7 @@ Agent-facing documentation (glossary, governance, decisions, agent-surface-selec
 **Policy: signal-then-decide.**
 
 1. **Signal collection** — `micro-review` includes a `docHints` array in its output whenever a diff implies a doc may be stale (new term, changed decision, new pattern).
-2. **Aggregation** — `dev-workflow` Step 7 deduplicates and presents accumulated hints after all phases complete.
+2. **Aggregation** — `plan-story` Step 7 deduplicates and presents accumulated hints after all phases complete.
 3. **Human decides** — update now, defer, or dismiss. Agents never auto-edit docs.
 
 **What agents watch for:**
