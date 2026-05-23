@@ -97,7 +97,7 @@ Reviewed against:
 | Dimension | Agentic-Agile Template | StolenAi |
 |-----------|----------------------|-----------|
 | Tracker | GitHub Issues + Projects | Azure DevOps (enterprise) |
-| Agent autonomy | Agents earn autonomy, eventually create issues | Conservative — agents never touch ADO directly |
+| Agent autonomy | Agents earn autonomy, eventually create issues | Conservative — agents never touch ADO directly (see `docs/governance.md` § Graduated Agent Autonomy for future tiers) |
 | MCP | `mcp.json` included | No custom MCP; uses Microsoft Learn + Context7 MCPs for docs/library lookups. Custom MCP excluded for PoC (Decision 18) |
 
 ### Assessment
