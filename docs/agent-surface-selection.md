@@ -32,7 +32,7 @@ When to use each execution surface in StolenAi. This codifies Decision 19 from `
 3. The output quality depends on **eliciting** unstated knowledge
 4. The task is **exploratory** (outcome not predictable from input alone)
 
-Examples: `refine-feature` (elicit Feature details), `refine-story` (lock technical approach), `tdd` (drive implementation with human feedback)
+Examples: `refine-feature` (elicit Feature details), `refine-story` (lock technical approach)
 
 ### Use an Agent when:
 1. The task can run to **completion without human input**
@@ -79,9 +79,9 @@ Plan Feature:
        [fetch]          [elicit/clarify]      [transform]          [write to ADO]
 
 Plan Story:
-  fetch-story.ps1  →  refine-story (SKILL)  →  persist-plan.ps1  →  tdd (SKILL)  →  micro-review (AGENT)
-       Script             Skill                  Script              Skill             Agent
-       [fetch]        [elicit/decide]          [commit/post]     [implement]        [validate]
+  fetch-story.ps1  →  refine-story (SKILL)  →  persist-plan.ps1  →  coder (AGENT)  →  micro-review (AGENT)
+       Script             Skill                  Script              Agent              Agent
+       [fetch]        [elicit/decide]          [commit/post]     [implement+TDD]      [validate]
 ```
 
 ## Cost Implications
