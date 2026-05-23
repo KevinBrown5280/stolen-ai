@@ -1,0 +1,16 @@
+{
+  "name": "stolen-ai",
+  "owner": {
+    "name": "KevinBrown5280"
+  },
+  "metadata": {
+    "description": "AI-assisted ADO workflows: decompose Features into Stories, plan Story implementation with TDD, and execute with drift detection."
+  },
+  "plugins": [
+    {
+      "name": "stolen-ai",
+      "description": "Two pipelines — Plan Feature (Feature → Stories) and Plan Story (Story → Code) — with grill-first clarification, schema-validated handoffs, and micro-review drift detection.",
+      "source": "plugins/stolen-ai"
+    }
+  ]
+}

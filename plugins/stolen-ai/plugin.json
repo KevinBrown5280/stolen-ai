@@ -3,8 +3,9 @@
   "description": "AI-assisted ADO workflows: decompose Features into Stories, plan Story implementation with TDD, and execute with drift detection. Two pipelines — Plan Feature (Feature → Stories) and Plan Story (Story → Code).",
   "version": "0.1.0",
   "author": {
-    "name": "Benefits-Outsourcing"
+    "name": "Kevin Brown"
   },
+  "repository": "https://github.com/KevinBrown5280/stolen-ai",
   "license": "MIT",
   "keywords": ["ado", "azure-devops", "planning", "tdd", "story-slicing"],
   "agents": "agents/",
