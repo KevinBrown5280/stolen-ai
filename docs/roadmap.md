@@ -15,6 +15,41 @@ It does NOT add value at the task level because tasks within a single story are 
 
 **Implementation:** Add `fileOwnership` array to `stories-output.schema.json` (populated during dev-grill, not PO slice) with structure: `[{ "path": "...", "action": "create|modify|delete" }]`.
 
+## Dev Spec as ADO Attachment
+
+**Trigger:** Team grows beyond single-developer workflow; non-dev stakeholders need spec access without cloning the repo.
+
+Currently the dev spec (`specs/{feature}/*.md`) lives in git only, with a discussion comment on the ADO Story providing inline visibility. The PO brief is already attached to ADO (required — `output/` is ephemeral and `fetch-story.ps1` pulls it for dev-grill).
+
+Attaching the dev spec alongside the discussion comment would be ~5 lines in `persist-plan.ps1` — the file already exists on disk at post time and the auth token is already acquired. Marginal runtime cost is one REST upload + one relation add.
+
+**Implementation:** After writing the spec file and posting the discussion comment, upload `specs/{feature}/{storyId}.md` as an attachment on the Story using the same pattern as `post-stories.ps1` brief attachment (REST POST to `_apis/wit/attachments`, then `az boards work-item relation add --relation-type "Attached File"`).
+
+## PO Slice Summary vs. Dev-Driven Story Creation
+
+**Trigger:** Evidence that PO-created Stories lack technical depth, or that dev-grill frequently restructures the slice boundaries.
+
+Currently the PO workflow creates full User Stories in ADO (title, description, AC, brief). The dev workflow then picks up each Story and plans tasks within it. An alternative model:
+
+1. **PO workflow** produces a *slice summary* (posted as a comment or attachment on the Feature) — describing the functional decomposition, priorities, and constraints — but does NOT create individual Stories in ADO.
+2. **Dev workflow** consumes the slice summary + performs their own technical grill, then creates Stories that blend PO intent with technical structure (dependency order, shared-code boundaries, integration points).
+
+**Arguments for this change:**
+- Stories would reflect both business and technical slicing in one pass
+- Avoids the dev-grill discovering that PO slice boundaries don't align with code boundaries (e.g. two PO stories touch the same component and should be one, or one PO story hides two independent code changes)
+- Single point of Story creation = single schema, single post script
+
+**Arguments against (current design):**
+- PO-created Stories give early backlog visibility before any dev picks them up
+- Separation of concerns: PO owns "what," dev owns "how"
+- Current flow already works — dev-grill refines *within* the Story rather than restructuring across Stories
+
+**Implementation (if adopted):**
+- `post-stories.ps1` replaced by a `post-slice-summary.ps1` that posts a structured comment/attachment to the Feature
+- New `create-stories.ps1` in `scripts/dev-workflow/` that takes the combined grill output (PO summary + technical plan) and creates Stories
+- `schemas/slice-summary.schema.json` for the PO→Dev handoff artifact
+- `stories-output.schema.json` would gain technical fields (task DAG sketch, file ownership)
+
 ## Graduated Agent Autonomy
 
 **Trigger:** Sustained metrics data in `metrics/metrics.jsonl` justifying removal of human gates.

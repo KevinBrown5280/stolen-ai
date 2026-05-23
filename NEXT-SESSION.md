@@ -103,6 +103,7 @@ Single-section review of StolenAi against the full referenced material:
 | Tracker | GitHub Issues + Projects | Azure DevOps (enterprise) |
 | Agent autonomy | Agents earn autonomy, eventually create issues | Conservative — agents never touch ADO directly (see `docs/governance.md` § Graduated Agent Autonomy for future tiers) |
 | MCP | Off-the-shelf `mcp.json` (github, filesystem, memory) | No MCP wired in scripts/agents. Skills may use Microsoft Learn + Context7 MCPs in-session for docs/library lookups. Custom MCP excluded for PoC (Decision 18) |
+| Spec location | Spec lives in the issue | PO brief → ADO attachment (handoff mechanism); dev spec → git only + ADO discussion comment for visibility. Future considerations in `docs/roadmap.md` |
 
 ### Manifesto Values Mapping (5 values)
 
@@ -145,7 +146,6 @@ Gaps from the manifesto and template worth tracking:
 - **P3 (parallel partnerships across multiple humans+agents)** — StolenAi is single-developer-with-agents. The template assumes a *team* of humans each running their own agentic swarms in the same codebase. Cross-developer coordination (file ownership across concurrent stories) is out of scope today.
 - **P10 (autonomy earned through evidence)** — `docs/governance.md` describes graduated autonomy tiers, but there is no measurement-gated promotion path. Promotions are currently manual/policy-driven, not evidence-driven.
 - **P13 (budget for the full cycle)** — `plan-output.schema.json` tracks implementation tasks; it does not separately budget review, rework, or integration time. Micro-review + retros imply this but don't quantify it.
-- **Issues-first / spec-in-issue divergence** — Template mandates "no work without an issue; spec lives in the issue." StolenAi treats ADO Stories as the issue equivalent, but the actual spec (dev-grill output) persists locally as `specs/{feature}/*.md`, not back into ADO. Tradeoff: lower ADO noise + token cost vs. reduced discoverability for non-dev stakeholders.
 - **CI/CD as Story 1** — Template makes this a mandate ("validation infrastructure is the first story implemented, not the last"). StolenAi's slice agent *suggests* CI/CD when no pipeline exists — softer enforcement. Consider promoting to a slice-time hard check.
 - **Originating Prompt capture** — Template's issue template has an explicit field for the originating human prompt to feed retros. StolenAi doesn't capture this. Easy add to `fetch-story.ps1` brief or the grill summary.
 - **Per-model instruction splits (CLAUDE.md / STYLE.md)** — Template ships separate files for Claude vs Copilot vs style conventions. StolenAi has one `copilot-instructions.md`. Fine for the PoC's single-model assumption; revisit when expanding model coverage.
