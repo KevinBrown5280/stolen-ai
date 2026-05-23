@@ -4,3 +4,4 @@ metrics/
 specs/
 NEXT-SESSION.md
 *.tmp
+.stolenai.json

@@ -8,16 +8,25 @@ description: >
 
 # Getting Started with Stolen AI
 
-## Prerequisites
+## Step 1 — Setup (Interactive)
 
-Create a `.stolenai.json` file in your project root with your ADO details:
+Check if `.stolenai.json` exists in the workspace root. **Important:** This file may be gitignored, so do NOT use file_search or grep_search to find it. Instead, use `read_file` on the explicit path `<workspace-root>/.stolenai.json` — if the read succeeds, the file exists.
 
-```json
-{
-  "org": "your-ado-org",
-  "project": "YourProject"
-}
-```
+**If it does NOT exist (read_file fails):**
+1. Tell the user: "I need to set up your ADO connection first."
+2. Use `vscode_askQuestions` to prompt for:
+   - **ADO Organization** — the org name from `dev.azure.com/{org}`
+   - **ADO Project** — the project name within that org
+3. Create `.stolenai.json` in the workspace root with their answers:
+   ```json
+   {
+     "org": "<their-org>",
+     "project": "<their-project>"
+   }
+   ```
+4. Confirm creation, then continue to Step 2.
+
+**If it already exists:** skip to Step 2.
 
 ## Workflows
 

@@ -15,7 +15,7 @@ You are a workflow coordinator. Guide the user through the PO workflow step by s
 
 ### Step 1: Fetch Feature
 Run `../scripts/plan-feature/fetch-feature.ps1` (relative to this file) with the Feature ID the user provides.
-Read the ADO org and project from `.stolenai.json` in the user's working directory.
+Read the ADO org and project from `.stolenai.json` in the user's working directory. If the file does not exist, ask the user for their ADO org and project (format: `https://dev.azure.com/{org}/{project}`), create `.stolenai.json` with `{ "org": "...", "project": "..." }`, then continue.
 Pass the output as context to Step 2.
 
 ### Step 2: Refine
