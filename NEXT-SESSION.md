@@ -83,6 +83,7 @@ Reviewed against:
 - **Agent surface selection** — `docs/agent-surface-selection.md` with decision matrix, selection rules, and anti-patterns
 - **Shared vocabulary** — `docs/glossary.md` defines 12 terms (grill, slice, brief, persist, micro-review, drift, checkpoint, surface, contract, DAG, orchestrator, tracer bullet)
 - **CI/CD from day one** — slice agent notes CI/CD in first story's brief when no pipeline exists; dev-grill folds pipeline setup into the tracer bullet
+- **Doc maintenance** — signal-then-decide: micro-review collects `docHints` per phase, dev-workflow aggregates post-completion, human acts. Avoids both staleness (manual-only) and cost waste (auto-update every change)
 
 ### Gaps to Close
 
@@ -97,7 +98,6 @@ Reviewed against:
 |-----------|----------------------|-----------|
 | Tracker | GitHub Issues + Projects | Azure DevOps (enterprise) |
 | Agent autonomy | Agents earn autonomy, eventually create issues | Conservative — agents never touch ADO directly |
-| Doc maintenance | Agents required to update docs every change | Manual |
 | MCP | `mcp.json` included | No custom MCP; uses Microsoft Learn + Context7 MCPs for docs/library lookups. Custom MCP excluded for PoC (Decision 18) |
 
 ### Assessment

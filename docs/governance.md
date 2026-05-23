@@ -78,6 +78,26 @@ All AI ↔ Script boundaries are governed by JSON Schema:
 
 Agents MUST produce valid JSON against the relevant schema. Scripts MUST validate input before executing.
 
+## Doc Maintenance
+
+Agent-facing documentation (glossary, governance, PLAN.md decisions, agent-surface-selection) must stay accurate for agents to produce correct output. Stale context = worse results.
+
+**Policy: signal-then-decide.**
+
+1. **Signal collection** — `micro-review` includes a `docHints` array in its output whenever a diff implies a doc may be stale (new term, changed decision, new pattern).
+2. **Aggregation** — `dev-workflow` Step 7 deduplicates and presents accumulated hints after all phases complete.
+3. **Human decides** — update now, defer, or dismiss. Agents never auto-edit docs.
+
+**What agents watch for:**
+- New domain terms absent from `docs/glossary.md`
+- Decisions that contradict or extend the table in `PLAN.md`
+- Patterns that contradict or extend rules in this file
+- New surfaces/capabilities missing from `docs/agent-surface-selection.md`
+
+**What agents must NOT do:**
+- Modify any doc in `docs/` without human approval
+- Block workflow progress on doc staleness (hints are advisory, never blocking)
+
 ## Nudge Enforcement
 
 The system warns rather than hard-blocks:

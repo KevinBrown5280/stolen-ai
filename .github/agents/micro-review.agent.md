@@ -36,9 +36,22 @@ You will receive:
       "specReference": "Which part of the spec this contradicts",
       "suggestion": "How to resolve"
     }
+  ],
+  "docHints": [
+    "Short description of a doc that may need updating and why"
   ]
 }
 ```
+
+## Doc Hints
+
+While reviewing the diff, note any implications for agent-facing documentation. Emit a `docHints` entry when you observe:
+- A new domain term used but absent from `docs/glossary.md`
+- A decision that contradicts or extends the decisions table in `PLAN.md`
+- A pattern that contradicts or extends `docs/governance.md` rules
+- A new surface/capability that should appear in `docs/agent-surface-selection.md`
+
+Keep hints terse (one sentence each). Omit `docHints` entirely (or use `[]`) when nothing is relevant. These are signals, not commands — a human will decide whether to act.
 
 ## Rules
 

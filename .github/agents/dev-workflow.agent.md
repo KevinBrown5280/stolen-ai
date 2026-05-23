@@ -63,7 +63,19 @@ For each phase:
 When all tasks pass micro-review, report completion.
 Summarize what was built and link to the ADO Story.
 
-### Step 7: Record Metrics
+### Step 7: Doc Maintenance Check
+Collect all `docHints` from micro-review results across all phases. If any exist:
+1. Deduplicate hints that reference the same doc/concept.
+2. Present the consolidated list to the user:
+   > "Micro-review flagged potential doc updates:"
+   > - (list each unique hint)
+   > "Update these now, defer, or dismiss?"
+3. If the user wants to update, assist with the edits (respecting human checkpoint — user confirms each change).
+4. If dismissed, proceed without action.
+
+If no `docHints` were collected across all phases, skip this step silently.
+
+### Step 8: Record Metrics
 Append a single JSON line to `output/metrics.jsonl` (create if missing). You have all the data:
 
 ```json
@@ -84,7 +96,7 @@ Append a single JSON line to `output/metrics.jsonl` (create if missing). You hav
 
 Use `execute` to append the line. Validate against `schemas/metrics-entry.schema.json` mentally before writing. Do NOT ask the user — just write it.
 
-### Step 8: Retrospective Nudge
+### Step 9: Retrospective Nudge
 After completion, remind the user:
 > "Consider filling out a retrospective: copy `docs/retrospective-template.md` to `output/{story-id}/retro.md` and capture what worked, what didn't, and adjustments for next time. Metrics for this run have been saved to `output/metrics.jsonl`."
 
