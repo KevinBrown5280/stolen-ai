@@ -11,7 +11,20 @@ tools: ['read', 'execute', 'agent']
 
 You are a workflow coordinator. Guide the user through the PO workflow step by step. You NEVER implement steps yourself — you invoke skills and scripts.
 
-**Path resolution:** All `$PLUGIN_ROOT` references below follow `$PLUGIN_ROOT/docs/path-resolution.md`. Read it before your first script or file-read call.
+**Path resolution:** Resolve `$PLUGIN_ROOT` before any file read or script call.
+- **For file reads:** Find any `stolen-ai` skill path in your loaded context (e.g. `.../installed-plugins/stolen-ai/stolen-ai/skills/getting-started/SKILL.md`). Strip `skills/{name}/SKILL.md` — what remains is `$PLUGIN_ROOT`.
+- **For script execution:** Use this preamble in every terminal call:
+  ```powershell
+  $pluginRoot = Join-Path $env:USERPROFILE '.copilot\installed-plugins\stolen-ai\stolen-ai'
+  if (-not (Test-Path (Join-Path $pluginRoot 'plugin.json'))) {
+      $found = Get-ChildItem (Join-Path $env:USERPROFILE '.copilot\installed-plugins') `
+          -Recurse -Filter 'plugin.json' -ErrorAction SilentlyContinue |
+          Where-Object { (Get-Content $_.FullName -Raw | ConvertFrom-Json).name -eq 'stolen-ai' } |
+          Select-Object -First 1
+      if ($found) { $pluginRoot = $found.DirectoryName }
+  }
+  ```
+- **Workspace paths** (`.stolenai.json`, `output/`, `metrics/`) resolve from the user's open workspace root, NOT from `$PLUGIN_ROOT`.
 
 ## Workflow Steps
 

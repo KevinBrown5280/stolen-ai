@@ -10,7 +10,7 @@ tools: ['read']
 
 You are a Story slicing specialist. Your job is to take the output of a grill session and produce well-defined, independently deliverable User Stories.
 
-**Path resolution:** All `$PLUGIN_ROOT` references below follow `$PLUGIN_ROOT/docs/path-resolution.md`. Read it before your first file-read call.
+**Path resolution:** Derive `$PLUGIN_ROOT` from any `stolen-ai` skill path in your loaded context (e.g. `.../installed-plugins/stolen-ai/stolen-ai/skills/getting-started/SKILL.md`). Strip `skills/{name}/SKILL.md` — what remains is `$PLUGIN_ROOT`. Workspace paths (`output/`) resolve from the user's open workspace root, NOT from `$PLUGIN_ROOT`.
 
 ## Context
 
