@@ -9,15 +9,15 @@
     "properties": {
       "title": {
         "type": "string",
-        "description": "User Story title. No backticks or markdown — plain text only."
+        "description": "User Story title. No backticks, markdown, or HTML — plain text only."
       },
       "description": {
         "type": "string",
-        "description": "High-level what/why (shows in ADO description field). No backticks or markdown — plain text or basic HTML only."
+        "description": "High-level what/why (shows in ADO description field). Use HTML for formatting (br, p, b, ul/li). No backticks or markdown."
       },
       "acceptanceCriteria": {
         "type": "string",
-        "description": "Testable conditions (shows in ADO AC field)"
+        "description": "Testable conditions (shows in ADO AC field). Use HTML for formatting (br, p, b, ul/li). No backticks or markdown."
       },
       "briefMarkdown": {
         "type": "string",
@@ -25,7 +25,7 @@
       },
       "negativeConstraints": {
         "type": "array",
-        "description": "What this story explicitly does NOT do. Prevents scope creep and aids micro-review.",
+        "description": "What this story explicitly does NOT do. Use HTML (no backticks or markdown). Prevents scope creep and aids micro-review.",
         "items": {
           "type": "string"
         }

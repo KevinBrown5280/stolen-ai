@@ -36,7 +36,14 @@ Pass the output as context to Step 2.
 ### Step 2: Refine
 Invoke the `refine-feature` skill. Provide the Feature description from Step 1.
 Continue until the skill signals "Ready for slicing: YES."
-Capture the structured summary output.
+Capture the structured summary output. Save it to `output/{feature-id}/grill-summary.md` in the user's workspace root.
+
+### Step 2b: Post Refinement Summary
+Post the grill summary to the Feature as a Discussion comment so the full refinement context is visible in ADO:
+```
+$PLUGIN_ROOT/scripts/post-comment.ps1 -WorkItemId {feature-id} -File output/{feature-id}/grill-summary.md -Org {org} -Project {project} -Label "refine-feature"
+```
+Read `-Org` and `-Project` from `.stolenai.json` in the user's workspace root.
 
 ### Step 3: Slice
 Invoke the `slice-feature` agent as a sub-agent. Provide:

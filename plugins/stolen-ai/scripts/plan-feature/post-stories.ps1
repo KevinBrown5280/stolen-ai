@@ -114,7 +114,12 @@ $token = az account get-access-token --resource "499b84ac-1321-427f-aa17-267ca69
 $uploadHeaders = @{ Authorization = "Bearer $token"; "Content-Type" = "application/octet-stream" }
 
 # Inherit area/iteration/service line from parent Feature
-$parent = az boards work-item show --id $ParentId --org $orgUrl --output json | ConvertFrom-Json
+$parentJson = az boards work-item show --id $ParentId --org $orgUrl --output json 2>&1
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Failed to fetch parent Feature $ParentId`: $parentJson"
+    exit 1
+}
+$parent = $parentJson | ConvertFrom-Json
 $areaPath = $parent.fields.'System.AreaPath'
 $iterationPath = $parent.fields.'System.IterationPath'
 $serviceLine = $parent.fields.'Tas.ServiceLine'
@@ -125,44 +130,42 @@ if ([string]::IsNullOrWhiteSpace($serviceLine)) {
 }
 
 foreach ($story in $stories) {
-    # Build description with negative constraints appended
+    # Build description with negative constraints appended (HTML for ADO rich text field)
     $fullDescription = $story.description
     if ($story.PSObject.Properties['negativeConstraints'] -and $story.negativeConstraints.Count -gt 0) {
-        $ncList = ($story.negativeConstraints | ForEach-Object { "• $_" }) -join "`n"
-        $fullDescription += "`n`n**Negative Constraints:**`n$ncList"
+        $ncList = ($story.negativeConstraints | ForEach-Object { "<li>$_</li>" }) -join ""
+        $fullDescription += "<br><br><b>Negative Constraints:</b><ul>$ncList</ul>"
     }
 
-    # Create the User Story (AC set via REST below due to multiline content)
-    $item = $null
-    try {
-        $item = az boards work-item create `
-            --type "User Story" `
-            --title $story.title `
-            --description $fullDescription `
-            --org $orgUrl `
-            --project $Project `
-            --fields "System.AreaPath=$($areaPath)" "System.IterationPath=$($iterationPath)" "Tas.ServiceLine=$($serviceLine)" "Tas.UserStoryType=User Story" `
-            --output json | ConvertFrom-Json
-    } catch {
+    # Create the User Story (simple/safe fields only — rich HTML fields set via REST below)
+    $createJson = az boards work-item create `
+        --type "User Story" `
+        --title $story.title `
+        --org $orgUrl `
+        --project $Project `
+        --fields "System.AreaPath=$($areaPath)" "System.IterationPath=$($iterationPath)" "Tas.ServiceLine=$($serviceLine)" "Tas.UserStoryType=User Story" `
+        --output json 2>&1
+    if ($LASTEXITCODE -ne 0) {
         Write-Warning "Failed to create story: $($story.title)"
-        Write-Warning "$_"
+        Write-Warning "$createJson"
         continue
     }
+    $item = $createJson | ConvertFrom-Json
     if (-not $item -or -not $item.id) {
         Write-Warning "Failed to create story (no id returned): $($story.title)"
         continue
     }
 
-    # Update Acceptance Criteria via REST API (multiline content needs HTML conversion)
+    # Set Description and AC via REST API — bypasses PowerShell argument parsing entirely
     try {
-        $acHtml = $story.acceptanceCriteria -replace "`r`n", "<br>" -replace "`n", "<br>"
         $patchBody = ConvertTo-Json -Depth 3 -InputObject @(
-            @{ op = "add"; path = "/fields/Microsoft.VSTS.Common.AcceptanceCriteria"; value = $acHtml }
+            @{ op = "add"; path = "/fields/System.Description"; value = $fullDescription },
+            @{ op = "add"; path = "/fields/Microsoft.VSTS.Common.AcceptanceCriteria"; value = $story.acceptanceCriteria }
         )
         $patchHeaders = @{ Authorization = "Bearer $token"; "Content-Type" = "application/json-patch+json" }
         Invoke-RestMethod -Uri "$orgUrl/_apis/wit/workitems/$($item.id)?api-version=7.1" -Method Patch -Headers $patchHeaders -Body ([System.Text.Encoding]::UTF8.GetBytes($patchBody)) | Out-Null
     } catch {
-        Write-Warning "Failed to set AC for Story #$($item.id): $_"
+        Write-Warning "Failed to set Description/AC for Story #$($item.id): $_"
     }
 
     # Link to parent Feature

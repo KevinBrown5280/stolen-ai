@@ -86,6 +86,8 @@ Each story's `briefMarkdown` should include:
 - Do NOT create "setup" or "infrastructure" stories unless they deliver user value
 - Do NOT exceed 8 stories per Feature (re-slice the Feature if needed)
 - DO order stories by suggested implementation sequence (but no hard dependencies)
-- Do NOT use backticks (`` ` ``) or markdown formatting in `title` or `description` fields — these are passed as CLI arguments where backticks corrupt command parsing. Use plain text or basic HTML (e.g. `<br>`, `<p>`, `<b>`) for formatting. Markdown is allowed in `briefMarkdown` and `acceptanceCriteria` (which are posted via REST API).
+- `title`: plain text only — no backticks, no markdown, no HTML.
+- `description`, `acceptanceCriteria`, and `negativeConstraints`: HTML format for ADO rich text rendering — use `<br>` for line breaks, `<p>` for paragraphs, `<b>` for bold, `<ul><li>` for lists. Do NOT use backticks or markdown formatting (backticks corrupt PowerShell CLI argument parsing).
+- `briefMarkdown`: markdown is allowed (attached as .md file, not rendered in ADO fields).
 - Output MUST be valid JSON — no duplicate keys within an object. Each property name appears exactly once per story object.
 - Return ONLY the JSON array — no surrounding markdown fences, no commentary
