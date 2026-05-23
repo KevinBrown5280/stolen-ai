@@ -84,6 +84,17 @@ if ($DryRun) {
         $md += $s.acceptanceCriteria
         $md += '```'
         $md += ""
+
+        # Negative Constraints (optional field)
+        if ($s.PSObject.Properties['negativeConstraints'] -and $s.negativeConstraints.Count -gt 0) {
+            $md += "### Negative Constraints"
+            $md += ""
+            foreach ($nc in $s.negativeConstraints) {
+                $md += "- $nc"
+            }
+            $md += ""
+        }
+
         $md += "### Implementation Brief"
         $md += $s.briefMarkdown
         $md += ""
@@ -109,13 +120,20 @@ $iterationPath = $parent.fields.'System.IterationPath'
 $serviceLine = $parent.fields.'Tas.ServiceLine'
 
 foreach ($story in $stories) {
+    # Build description with negative constraints appended
+    $fullDescription = $story.description
+    if ($story.PSObject.Properties['negativeConstraints'] -and $story.negativeConstraints.Count -gt 0) {
+        $ncList = ($story.negativeConstraints | ForEach-Object { "• $_" }) -join "`n"
+        $fullDescription += "`n`n**Negative Constraints:**`n$ncList"
+    }
+
     # Create the User Story (without multiline AC field to avoid argument parsing issues)
     $item = $null
     try {
         $item = az boards work-item create `
             --type "User Story" `
             --title $story.title `
-            --description $story.description `
+            --description $fullDescription `
             --org $orgUrl `
             --project $Project `
             --fields "System.AreaPath=$areaPath" `

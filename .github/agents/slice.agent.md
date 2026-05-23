@@ -45,7 +45,11 @@ Produce a JSON array matching `schemas/stories-output.schema.json`:
     "title": "As a [persona], I can [action] so that [value]",
     "description": "High-level what and why...",
     "acceptanceCriteria": "Given... When... Then...",
-    "briefMarkdown": "# Implementation Brief\n\n## Context\n...\n## Suggested Approach\n...\n## Risks\n..."
+    "briefMarkdown": "# Implementation Brief\n\n## Context\n...\n## Suggested Approach\n...\n## Risks\n...",
+    "negativeConstraints": [
+      "Does NOT modify admin-facing document views",
+      "Does NOT add a new UI surface"
+    ]
   }
 ]
 ```
@@ -55,8 +59,15 @@ Produce a JSON array matching `schemas/stories-output.schema.json`:
 Each story's `briefMarkdown` should include:
 - **Context**: Why this story exists, relationship to the Feature
 - **Suggested approach**: Non-prescriptive guidance for the dev
+- **Negative constraints**: What this story explicitly does NOT do (mirrors `negativeConstraints`)
 - **Risks/Unknowns**: Anything the dev should investigate
 - **Relevant ADRs**: References to existing architectural decisions
+
+## Negative Constraints Rules
+
+- Include at least 1-2 negative constraints per story
+- Focus on adjacent scope that someone might mistakenly include
+- Use concrete language: "Does NOT modify X" rather than vague "Does NOT break things"
 
 ## Rules
 
