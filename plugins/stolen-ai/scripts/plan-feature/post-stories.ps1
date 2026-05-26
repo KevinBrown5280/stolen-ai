@@ -37,7 +37,15 @@ foreach ($block in $storyBlocks) {
     }
 }
 
-$stories = @($rawJson | ConvertFrom-Json)
+$parsed = $rawJson | ConvertFrom-Json
+
+# Defensive unwrap: if LLM produced { "stories": [...] } instead of a bare array, extract the inner array
+if ($parsed -is [PSCustomObject] -and $parsed.PSObject.Properties['stories']) {
+    Write-Warning "Input was wrapped in an object. Unwrapping 'stories' property to array."
+    $parsed = $parsed.stories
+}
+
+$stories = @($parsed)
 
 if ($stories.Count -eq 0) {
     Write-Error "Schema validation failed: input must be a non-empty JSON array of story objects."

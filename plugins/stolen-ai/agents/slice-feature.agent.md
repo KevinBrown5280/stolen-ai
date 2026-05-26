@@ -91,3 +91,4 @@ Each story's `briefMarkdown` should include:
 - `briefMarkdown`: markdown is allowed (attached as .md file, not rendered in ADO fields).
 - Output MUST be valid JSON — no duplicate keys within an object. Each property name appears exactly once per story object.
 - Return ONLY the JSON array — no surrounding markdown fences, no commentary
+- DO NOT wrap the array in an object like `{ "stories": [...] }` — the top-level value MUST be `[...]`
