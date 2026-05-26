@@ -79,6 +79,26 @@ Currently the slice-feature agent picks story count organically based on the dec
 - Plan-feature agent asks during review setup or accepts it as an upfront parameter
 - No schema change needed (output is still `stories-output.schema.json`)
 
+## Optional Task Layer in Plan-Story
+
+**Trigger:** Evidence that task decomposition adds overhead without preventing drift for small Stories.
+
+Currently plan-story always decomposes a Story into a task DAG (2-4 hour units) for TDD + micro-review. For Stories that are already small (single file, clear AC, ~half a day), this adds ceremony without value — the Story *is* the task.
+
+**Proposed change:** Make the task layer optional. If a Story is simple enough, plan-story skips task decomposition and goes straight to implementation with one micro-review at the end.
+
+**Heuristic for skipping tasks:**
+- Story touches ≤2 files
+- AC is fully specified (no ambiguity to resolve during implementation)
+- Estimated effort ≤4 hours
+- No dependency ordering needed within the Story
+
+**Implementation:**
+- Refine-story grill produces a `complexity` signal (simple vs. multi-step)
+- If simple: plan-story emits a single-task `plan.json` (one entry, no `dependsOn`) and proceeds directly to code-story
+- If multi-step: existing DAG decomposition as-is
+- Micro-review still runs once at the end regardless
+
 ## Plugin Distribution
 
 **Trigger:** PoC validated end-to-end, team ready to share across repos/workspaces.
