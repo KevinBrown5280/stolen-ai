@@ -22,7 +22,7 @@ Human approves before any external write. AI never touches ADO directly — it p
 # 5. Approve → stories posted to ADO
 
 # Manual step-by-step:
-.\scripts\plan-feature\fetch-feature.ps1 -FeatureId 12345 -Org "myorg" -Project "myproject"
+.\scripts\plan-feature\fetch-feature.ps1 -WorkItemId 12345 -Org "myorg" -Project "myproject"
 # → refine (interactive) → slice-feature agent produces stories.json
 .\scripts\plan-feature\post-stories.ps1 -InputFile output/12345/stories.json -ParentId 12345 -Org "myorg" -Project "myproject" -DryRun
 # → review stories-review.md, then run without -DryRun to post

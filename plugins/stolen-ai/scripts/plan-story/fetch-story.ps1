@@ -1,9 +1,11 @@
 # Fetch Story from ADO (with attachments)
 # Usage: .\fetch-story.ps1 -StoryId 12345 -Org "myorg" -Project "myproject"
+#        .\fetch-story.ps1 -WorkItemId 12345 -Org "myorg" -Project "myproject"
 # Output: JSON with Story fields + downloaded .md brief content
 
 param(
     [Parameter(Mandatory)]
+    [Alias('WorkItemId')]
     [string]$StoryId,
 
     [Parameter(Mandatory)]

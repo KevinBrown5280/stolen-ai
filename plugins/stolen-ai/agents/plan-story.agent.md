@@ -29,7 +29,7 @@ You are a workflow coordinator. Guide the developer through the Dev workflow ste
 ## Workflow Steps
 
 ### Step 1: Fetch Story
-Run `$PLUGIN_ROOT/scripts/plan-story/fetch-story.ps1` with the Story ID the user provides.
+Run `$PLUGIN_ROOT/scripts/plan-story/fetch-story.ps1 -WorkItemId {story-id}` with the Story ID the user provides.
 Read the ADO org and project from `.stolenai.json` in the user's workspace root. If the file does not exist, ask the user for their ADO org and project (format: `https://dev.azure.com/{org}/{project}`), create `.stolenai.json` with `{ "org": "...", "project": "..." }`, then continue.
 Pass the output (including attached .md brief) as context to Step 2.
 

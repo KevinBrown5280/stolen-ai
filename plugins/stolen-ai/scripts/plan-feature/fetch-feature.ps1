@@ -1,9 +1,11 @@
 # Fetch Feature from ADO
 # Usage: .\fetch-feature.ps1 -FeatureId 12345 -Org "myorg" -Project "myproject"
+#        .\fetch-feature.ps1 -WorkItemId 12345 -Org "myorg" -Project "myproject"
 # Output: JSON with Feature fields written to stdout
 
 param(
     [Parameter(Mandatory)]
+    [Alias('WorkItemId')]
     [string]$FeatureId,
 
     [Parameter(Mandatory)]
