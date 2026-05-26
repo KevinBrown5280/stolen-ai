@@ -67,6 +67,18 @@ Currently the plan-feature workflow creates full User Stories in ADO (title, des
 - Metrics pipeline must be running and trustworthy before any tier > 0
 - Governance Rule §2 (AI never calls `az devops` directly) remains at all tiers — scripts still execute CRUD
 
+## Target Story Count Parameter
+
+**Trigger:** User wants to constrain how many stories a Feature is sliced into.
+
+Currently the slice-feature agent picks story count organically based on the decomposition patterns and feature complexity. Adding a `targetStoryCount` (or `maxStories`) parameter would let the user say "I want exactly 3 stories" before slicing runs, rather than only being able to merge/split during review.
+
+**Implementation:**
+- Add optional `targetStoryCount` field to the slice-feature agent's input context (passed from plan-feature during handoff)
+- Slice agent treats it as a soft constraint: aims for that count, but can deviate with stated justification
+- Plan-feature agent asks during review setup or accepts it as an upfront parameter
+- No schema change needed (output is still `stories-output.schema.json`)
+
 ## Plugin Distribution
 
 **Trigger:** PoC validated end-to-end, team ready to share across repos/workspaces.
