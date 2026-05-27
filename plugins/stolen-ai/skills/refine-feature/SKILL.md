@@ -27,6 +27,18 @@ During grilling, when a new domain term is resolved or an existing term's meanin
 - When an existing term's definition is sharpened, update it in place
 - Only add terms specific to this project's domain — not general programming concepts
 
+**Entry format** (append to the existing table):
+```
+| **Term** | One-sentence definition. Context on when/where it applies. |
+```
+Rules:
+- Bold the term name
+- Definition is one sentence max — define what it IS, not what it does
+- If a synonym should be avoided, append: `(avoid: X, Y)`
+- Keep alphabetical order within the table
+- If the new term relates to existing terms, add a line to `## Relationships` showing direction and cardinality
+- If the term was ambiguous and got resolved, add an entry to `## Flagged Ambiguities` documenting the confusion and resolution
+
 Skip categories where the Feature description already provides a clear answer. If a question can be answered by exploring the codebase, explore the codebase instead of asking.
 
 ## Gotchas

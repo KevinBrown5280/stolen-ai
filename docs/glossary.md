@@ -17,3 +17,19 @@ Shared vocabulary for StolenAi. Use these terms precisely to prevent drift acros
 | **Orchestrator** | A top-level agent (e.g., `plan-feature`, `plan-story`) that coordinates the full pipeline — invoking skills, sub-agents, and scripts in sequence. |
 | **Tracer Bullet** | A root task in a dev plan that proves end-to-end connectivity through an unproven architectural boundary before other tasks build on it. Always the DAG root — everything else depends on it. Expressed as a naturally-described task (no schema flag); refine-story surfaces it when a Story touches integrations or layers that haven't been proven yet. Plan-story concern only — not part of Feature slicing. |
 | **DryRun** | Script execution mode that validates inputs and generates review artifacts without performing external writes. Always safe to run. |
+
+## Relationships
+
+- A **Feature** is decomposed into one or more **Stories** via a **Slice**
+- A **Story** produces a **Brief** (attached .md) at slice time
+- A **Story** is refined via a **Grill**, producing a **DAG** of tasks
+- Each task in the **DAG** is implemented by a **code-story** agent
+- Each completed task is checked by a **Micro-review**
+- **Drift** is detected by **Micro-review** and resolved at a **Checkpoint**
+- A **Contract** governs the boundary between an **Orchestrator** and a **Script**
+- A **Tracer Bullet** is always the root of a **DAG**
+- **Persist** consumes a **Contract**-validated JSON and performs the external write
+
+## Flagged Ambiguities
+
+- "Plan" was used to mean both the grill output (task breakdown JSON) and the act of running the workflow — resolved: the artifact is a "plan" (lowercase); the workflow is "plan-story" or "plan-feature" (hyphenated, refers to the orchestrator agent).
