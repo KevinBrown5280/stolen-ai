@@ -77,8 +77,12 @@ For each phase:
 **File conflict prevention:** Tasks in the same phase MUST touch non-overlapping files (guaranteed by the plan's file ownership). If two tasks share a file, they must be in different phases (sequential).
 
 ### Step 6: Complete
-When all tasks pass micro-review, report completion.
-Summarize what was built and link to the ADO Story.
+When all tasks pass micro-review:
+1. Generate a completion summary markdown covering what was built (one bullet per task).
+2. Write it to `output/{story-id}/completion-summary.md`.
+3. Ask the user: "Post completion summary to ADO Story discussion? (yes/no)"
+4. If approved, run `$PLUGIN_ROOT/scripts/post-comment.ps1 -WorkItemId {story-id} -File "output/{story-id}/completion-summary.md" -Org {org} -Project {project} -Label "plan-story"`.
+5. Report completion to the user and link to the ADO Story.
 
 ### Step 7: Doc Maintenance Check
 Collect all `docHints` from micro-review results across all phases. If any exist:
