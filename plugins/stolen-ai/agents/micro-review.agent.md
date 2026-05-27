@@ -64,3 +64,4 @@ Keep hints terse (one sentence each). Omit `docHints` entirely (or use `[]`) whe
 - "blocking" = significant drift from locked decisions (pause for human)
 - Do NOT flag: style choices, variable naming, minor refactors within spec intent
 - DO flag: different data model than specified, skipped acceptance criteria, violated ADR
+- DO flag as `blocking`: **reuse-decision violations** — if a `decision` names a shared component/util/style to use (or extend) and the diff creates a parallel implementation, or if a decision says "build in shared location X" and the diff inlines it locally

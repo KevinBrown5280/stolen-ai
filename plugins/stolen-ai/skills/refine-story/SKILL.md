@@ -22,7 +22,7 @@ You will receive:
 2. Read `docs/glossary.md` from the workspace root to load the shared vocabulary
 3. Read the Story context
 4. Ask ONE technical question at a time — provide your recommended answer
-5. Explore categories as needed: Architecture → Data → Interface → Build/Deploy → Testing → Risk → Dependencies → Order
+5. Explore categories as needed: Architecture → Data → Interface → Reuse → Build/Deploy → Testing → Risk → Dependencies → Order
 6. Focus on HOW, not WHAT (requirements are locked in the AC)
 7. Track technical decisions as they lock
 8. When resolved, produce JSON output (see [output format](references/output-format.md))
@@ -48,6 +48,19 @@ Rules:
 - If the term was ambiguous and got resolved, add an entry to `## Flagged Ambiguities` documenting the confusion and resolution
 
 Skip categories where the brief already provides a clear answer. If a question can be answered by exploring the codebase, explore the codebase instead of asking.
+
+## Reuse Category
+
+Before locking the approach, explore the codebase for existing shared components, styles, hooks, utilities, or patterns that cover (or partially cover) this work. Do the exploration yourself — don't outsource it to the dev as a question they'll answer with a guess.
+
+Then ask, one at a time as relevant:
+
+1. **Existing match?** "I found `<component/util/style>` at `<path>` that does `<X>`. Use it as-is?"
+2. **Near match — extend or fork?** "`<thing>` is close but missing `<Y>`. Extend it (and own the regression risk for current consumers) or fork a variant?"
+3. **New but reusable?** "Nothing exists for this. Will this be reused elsewhere? If yes, build it in `<shared location>` from day one rather than inline."
+4. **Consistency drift?** "This Story introduces a `<button/modal/form/color/spacing>` pattern. Does it match what's already used in `<adjacent surface>`? If not, align or document the deliberate divergence."
+
+Lock the answers as decisions. If a shared component must be extracted or extended, that becomes its own task (often a dependency of the consuming tasks) — not a side-effect of another task. If a new shared location is being established, name it in the decisions so `slice-feature` and `code-story` honor it.
 
 ## API/Library Verification
 
@@ -80,4 +93,5 @@ Before producing final output, self-check:
 - [ ] Every task has enough detail for a TDD agent to execute without asking questions
 - [ ] Dependencies form a DAG (no circular deps)
 - [ ] Task sizes are 2-4 hours (split if larger, merge if trivially small)
+- [ ] Reuse opportunities surfaced — shared components/styles/utilities either leveraged, extended (as their own task), or consciously rejected with rationale captured in `decisions`
 - [ ] Output matches `$PLUGIN_ROOT/schemas/plan-output.schema.json`

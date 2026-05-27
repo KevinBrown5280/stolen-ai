@@ -45,7 +45,7 @@ Follow these in new code. When touching existing code, match surrounding style f
 1. **Deep modules** — Small interface (few methods, simple params), complex implementation hidden inside. If the interface is as big as the implementation, the module is too shallow — split it or absorb it.
 2. **Flat over clever** — No metaprogramming, no unnecessary indirection, no abstractions that exist "just in case." Implement the task as described, not as you wish it were.
 3. **Regenerable** — Minimize coupling so any file can be rewritten from scratch without breaking the system. Pass state explicitly; avoid globals.
-4. **Composition before duplication** — Before scaffolding multiple files, identify shared structure. Use framework-native patterns (layouts, providers, shared components). Duplication that requires the same fix in N places is a bug factory.
+4. **Composition before duplication** — Before scaffolding multiple files, identify shared structure. Use framework-native patterns (layouts, providers, shared components). Duplication that requires the same fix in N places is a bug factory. **If the plan's `decisions` name a specific shared component, util, or style to use (or extend), use it — creating a parallel implementation is drift, not a stylistic choice. If you discover the named component is unsuitable, STOP and report back rather than silently forking.**
 5. **No new dependencies** unless the platform has no built-in equivalent.
 6. **Structured logs at boundaries** — Emit detailed, structured logs at key entry/exit points. Make errors explicit and informative.
 7. **Comments = invariants only** — Don't narrate code. Comment only to note assumptions, invariants, or external requirements.

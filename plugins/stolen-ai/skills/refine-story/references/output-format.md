@@ -16,6 +16,14 @@ When grilling is complete, produce JSON matching `schemas/plan-output.schema.jso
     {
       "decision": "Token expires in 15 minutes",
       "rationale": "Balances security with UX; matches industry standard"
+    },
+    {
+      "decision": "Use existing EmailLayout component at src/components/email/EmailLayout.tsx for the reset email; do not create a parallel email template",
+      "rationale": "Reuse — already used by 4 other transactional emails; consistent header/footer/branding"
+    },
+    {
+      "decision": "Extract new ResetPasswordForm into src/components/auth/ (shared location) rather than inlining in the reset page",
+      "rationale": "Reuse — confirmation flow in upcoming Story 12346 will need the same form"
     }
   ],
   "openQuestions": [],
