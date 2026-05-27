@@ -49,7 +49,7 @@ if ($DryRun) {
     Write-Host "[DryRun] Would commit: $specFile"
 } else {
     git add $specFile
-    git commit -m "docs: add implementation spec for $($plan.storyTitle)" --quiet
+    git commit -m "docs: add implementation spec for $($plan.storyTitle) AB#$($plan.storyId)" --quiet
     Write-Host "Committed to current branch"
 }
 

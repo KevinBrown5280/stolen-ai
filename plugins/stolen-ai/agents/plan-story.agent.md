@@ -76,6 +76,16 @@ For each phase:
 
 **File conflict prevention:** Tasks in the same phase MUST touch non-overlapping files (guaranteed by the plan's file ownership). If two tasks share a file, they must be in different phases (sequential).
 
+**Commit convention:** After each phase completes and passes micro-review, commit the phase's changes with a multi-line message:
+```
+feat(phase-{n}): {brief phase summary} AB#{story-id}
+
+Tasks completed:
+- {task-id}: {task title} — {what it built}
+- {task-id}: {task title} — {what it built}
+```
+The `AB#` suffix auto-links the commit to the ADO Story. Ask the user before pushing.
+
 ### Step 6: Complete
 When all tasks pass micro-review:
 1. Generate a completion summary markdown covering what was built (one bullet per task).
