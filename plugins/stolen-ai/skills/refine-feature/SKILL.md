@@ -12,11 +12,20 @@ Grill the user about the ADO Feature they provide until every branch of ambiguit
 
 ## Procedure
 
-1. Read the Feature description (may be sparse or vague)
-2. Ask ONE question at a time — explain why you need it, provide your recommended answer
-3. Walk categories in order: Users → Value → Scope → Behavior → Dependencies → Constraints
-4. Track decisions as they lock — never revisit a locked decision unless the user asks
-5. When all branches resolve, output the summary (see [output format](references/output-format.md))
+1. Read `docs/glossary.md` from the workspace root to load the shared vocabulary
+2. Read the Feature description (may be sparse or vague)
+3. Ask ONE question at a time — explain why you need it, provide your recommended answer
+4. Walk categories in order: Users → Value → Scope → Behavior → Dependencies → Constraints
+5. Track decisions as they lock — never revisit a locked decision unless the user asks
+6. When all branches resolve, output the summary (see [output format](references/output-format.md))
+
+## Glossary Maintenance
+
+During grilling, when a new domain term is resolved or an existing term's meaning is clarified:
+- Challenge the user if they use a term that conflicts with the glossary ("The glossary defines X as Y, but you seem to mean Z — which is it?")
+- When a new term is locked, update `docs/glossary.md` inline — add the term to the table immediately, don't batch
+- When an existing term's definition is sharpened, update it in place
+- Only add terms specific to this project's domain — not general programming concepts
 
 Skip categories where the Feature description already provides a clear answer. If a question can be answered by exploring the codebase, explore the codebase instead of asking.
 

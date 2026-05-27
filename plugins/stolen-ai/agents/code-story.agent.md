@@ -26,7 +26,9 @@ Look up documentation for any API, framework, or library you'll use — your tra
 2. `mcp_microsoftdocs_microsoft_docs_search` / `mcp_microsoftdocs_microsoft_code_sample_search` (Microsoft/.NET/Azure)
 3. Fetch official docs directly if neither MCP is available
 
-Also read the existing files in your task's `files` list to understand current patterns before making changes.
+Also read:
+- The existing files in your task's `files` list to understand current patterns before making changes
+- `docs/glossary.md` from the workspace root — use the shared vocabulary for naming (variables, classes, methods), comments, and log messages. If the glossary defines a term, use that exact word, not a synonym.
 
 ## Scope Rules
 

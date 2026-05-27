@@ -19,6 +19,8 @@ You will receive:
 2. The relevant section of the spec file (`specs/{feature}/{story}.md`)
 3. Any referenced ADRs
 
+Also read `docs/glossary.md` from the workspace root. Use it to verify that code uses domain terms correctly — naming, comments, and log messages should align with the shared vocabulary.
+
 ## Behavior
 
 1. Compare the diff against the spec's stated approach

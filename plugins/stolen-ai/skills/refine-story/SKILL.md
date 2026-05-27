@@ -19,12 +19,21 @@ You will receive:
 ## Procedure
 
 1. **Pre-check:** Look for `copilot-instructions.md` or `.github/copilot-instructions.md` in the workspace root. If absent, warn: "This repo has no copilot-instructions.md — the agent won't know codebase conventions (naming, patterns, formatting). Consider creating one before implementation begins."
-2. Read the Story context
-3. Ask ONE technical question at a time — provide your recommended answer
-4. Explore categories as needed: Architecture → Data → Interface → Build/Deploy → Testing → Risk → Dependencies → Order
-5. Focus on HOW, not WHAT (requirements are locked in the AC)
-6. Track technical decisions as they lock
-7. When resolved, produce JSON output (see [output format](references/output-format.md))
+2. Read `docs/glossary.md` from the workspace root to load the shared vocabulary
+3. Read the Story context
+4. Ask ONE technical question at a time — provide your recommended answer
+5. Explore categories as needed: Architecture → Data → Interface → Build/Deploy → Testing → Risk → Dependencies → Order
+6. Focus on HOW, not WHAT (requirements are locked in the AC)
+7. Track technical decisions as they lock
+8. When resolved, produce JSON output (see [output format](references/output-format.md))
+
+## Glossary Maintenance
+
+During grilling, when a new domain term is resolved or an existing term's meaning is clarified:
+- Challenge the user if they use a term that conflicts with the glossary ("The glossary defines X as Y, but you seem to mean Z — which is it?")
+- When a new term is locked, update `docs/glossary.md` inline — add the term to the table immediately, don't batch
+- When an existing term's definition is sharpened, update it in place
+- Only add terms specific to this project's domain — not general programming concepts
 
 Skip categories where the brief already provides a clear answer. If a question can be answered by exploring the codebase, explore the codebase instead of asking.
 
