@@ -24,6 +24,10 @@ When grilling is complete, produce JSON matching `schemas/plan-output.schema.jso
     {
       "decision": "Extract new ResetPasswordForm into src/components/auth/ (shared location) rather than inlining in the reset page",
       "rationale": "Reuse — confirmation flow in upcoming Story 12346 will need the same form"
+    },
+    {
+      "decision": "Implement per Figma frame: https://figma.com/design/abc123/Reset-Flow?node-id=44-892 (pixel-perfect, WCAG AA)",
+      "rationale": "Design — locked by UX team; visual contract is binding; contrast verified in Figma"
     }
   ],
   "openQuestions": [],

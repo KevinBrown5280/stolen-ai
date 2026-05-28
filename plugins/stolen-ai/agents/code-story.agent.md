@@ -30,6 +30,14 @@ Also read:
 - The existing files in your task's `files` list to understand current patterns before making changes
 - `docs/glossary.md` from the workspace root — use the shared vocabulary for naming (variables, classes, methods), comments, and log messages. If the glossary defines a term, use that exact word, not a synonym.
 
+**UI tasks:** If your task's `files` include UI files (`.tsx`, `.jsx`, `.vue`, `.html`, `.razor`, `.svelte`, `.css`, `.scss`) AND the plan's `decisions` reference a design artifact (Figma link, visual spec, or design decisions), invoke the `designer` subagent before implementing. Pass it:
+- Your task `description` and `testStrategy`
+- The story's `decisions` array
+- The Figma URL (if present in decisions)
+- Your task's `files` list
+
+Implement to the visual spec the designer returns. If no design artifact exists in decisions and no designer invocation is needed (e.g., the task is purely structural/logic within a UI file), proceed using existing codebase patterns for visual consistency.
+
 ## Scope Rules
 
 - Prefer modifying only files listed in the task. Edits to unlisted existing files are allowed when necessary but must be flagged as **unplanned edits** in your completion report.

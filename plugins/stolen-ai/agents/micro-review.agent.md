@@ -65,3 +65,4 @@ Keep hints terse (one sentence each). Omit `docHints` entirely (or use `[]`) whe
 - Do NOT flag: style choices, variable naming, minor refactors within spec intent
 - DO flag: different data model than specified, skipped acceptance criteria, violated ADR
 - DO flag as `blocking`: **reuse-decision violations** — if a `decision` names a shared component/util/style to use (or extend) and the diff creates a parallel implementation, or if a decision says "build in shared location X" and the diff inlines it locally
+- DO flag as `blocking`: **design-decision violations** — if a `decision` references a Figma link or visual spec as binding and the diff introduces visual patterns that contradict it (wrong component, invented states not in the spec, missing states that were specified)

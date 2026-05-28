@@ -22,7 +22,7 @@ You will receive:
 2. Read `docs/glossary.md` from the workspace root to load the shared vocabulary
 3. Read the Story context
 4. Ask ONE technical question at a time — provide your recommended answer
-5. Explore categories as needed: Architecture → Data → Interface → Reuse → Build/Deploy → Testing → Risk → Dependencies → Order
+5. Explore categories as needed: Architecture → Data → Interface → Reuse → Design → Build/Deploy → Testing → Risk → Dependencies → Order
 6. Focus on HOW, not WHAT (requirements are locked in the AC)
 7. Track technical decisions as they lock
 8. When resolved, produce JSON output (see [output format](references/output-format.md))
@@ -61,6 +61,18 @@ Then ask, one at a time as relevant:
 4. **Consistency drift?** "This Story introduces a `<button/modal/form/color/spacing>` pattern. Does it match what's already used in `<adjacent surface>`? If not, align or document the deliberate divergence."
 
 Lock the answers as decisions. If a shared component must be extracted or extended, that becomes its own task (often a dependency of the consuming tasks) — not a side-effect of another task. If a new shared location is being established, name it in the decisions so `slice-feature` and `code-story` honor it.
+
+## Design Category
+
+For any Story that touches UI, resolve the visual contract before locking the approach.
+
+1. **Design artifact?** "Is there a Figma link (or other design spec) for this work?" If found in the Story, brief, or parent Feature, lock it as a binding decision. If absent for a UI story, ask the dev: will they design it, or should planning block until a design exists?
+2. **Visual contract type?** "Is this pixel-perfect to the design, or functional-match (layout and behavior correct, exact styling flexible)?" Lock the expectation.
+3. **Interaction states?** "What states must be rendered? Default, empty, loading, error, success, disabled, hover/focus?" Only ask for states not obvious from the design or AC.
+4. **WCAG level?** Default is AA unless the team has declared otherwise. Confirm. For non-standard controls (custom dropdowns, date pickers, modals, drag-and-drop), name the ARIA pattern or library that handles accessibility.
+5. **Responsive?** "Does this need to work at mobile/tablet/desktop breakpoints?" Lock which breakpoints matter or explicitly declare desktop-only.
+
+If the dev's approach introduces custom UI controls, prefer an existing accessible library (Radix, Headless UI, etc.) over building from scratch — this is both a reuse and an accessibility decision.
 
 ## API/Library Verification
 
