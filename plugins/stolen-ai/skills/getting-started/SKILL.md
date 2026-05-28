@@ -60,7 +60,6 @@ If you prefer step-by-step control:
 |--------------|---------|
 | Just refine a Feature | Say "refine this feature" in chat |
 | Just refine a Story | Say "refine this story" in chat |
-| Run TDD for a single task | Say "run TDD for task 1" in chat |
 
 ## Output Locations
 

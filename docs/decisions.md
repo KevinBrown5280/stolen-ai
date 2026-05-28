@@ -23,7 +23,7 @@ Numbered decisions that are **settled** — revisiting requires explicit justifi
 | 17 | Brief attached at slice time | With option to regenerate | Pre-baked, consistent |
 | 18 | No MCP for PoC | Use `az devops` CLI directly from scripts | Simpler, already available |
 | 19 | Format split | Skills (`SKILL.md`) for interactive. Agents (`.agent.md`) for autonomous + orchestration | Skills = portable (agentskills.io). Agents = sub-agent delegation |
-| 20 | Reuse existing | grill-me, tdd, code-review patterns already exist | Only build the gaps |
+| 20 | Reuse existing | grill-me, code-review patterns informed design | Only build the gaps |
 | 21 | Grill output = compressed summary | Only summary passes to next phase | Prevents context bloat |
 | 22 | .agent.md portability | VS Code, Visual Studio 2026, CLI all support it | Confirmed via fun-with-copilot repo |
 | 23 | agentskills.io compliance | Skills follow the open spec (frontmatter, progressive disclosure, references/) | Portable across all AI tools |

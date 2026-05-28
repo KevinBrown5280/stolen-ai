@@ -23,7 +23,7 @@ Loaded when working with scripts, output, or session planning. Guides users on H
 | 2. Refine | In Copilot chat, say: "refine this story" and paste the JSON output | Chat (skill: refine-story) |
 | 3. Review plan | Approve/edit the task breakdown + dependency graph produced by refinement | Chat |
 | 4. Persist | Run: `.\plugins\stolen-ai\scripts\plan-story\persist-spec.ps1 -InputFile output/<ID>/spec.json -Org "..." -Project "..."` (spec directory derived from `storyId` in the JSON) | Terminal |
-| 5. TDD | Say "run TDD for task 1" — drives red-green-refactor loop | Chat (skill: tdd) |
+| 5. TDD | Automatic — `code-story` agent drives red-green-refactor loop per task | Sub-agent |
 | 6. Micro-review | Automatic after each task — checks for spec drift | Sub-agent |
 
 **Or use the orchestrator:** Say `@plan-story pick up Story <ID>` in chat.

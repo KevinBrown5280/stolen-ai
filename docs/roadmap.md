@@ -148,7 +148,7 @@ Installed via `/plugin install <name>@<marketplace-source>`. Files land in `~/.c
 
 ### What does NOT need to change for local dev
 
-- `.github/agents/` and `.github/skills/` still load as workspace agents/skills when working inside the repo
+- `plugins/stolen-ai/agents/` and `plugins/stolen-ai/skills/` load as workspace agents/skills when working inside the repo
 - Adding `plugin.json` has zero effect on local behavior — it's only consumed by `/plugin install`
 - Both mechanisms coexist: local workspace convention + plugin manifest
 
