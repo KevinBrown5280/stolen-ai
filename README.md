@@ -1,3 +1,5 @@
+> **⚠️ Note:** This project is an unproven work in progress. Proceed with caution!!! ⚠️ 
+> 
 # StolenAi
 
 AI-assisted software engineering workflows for Azure DevOps teams.
@@ -10,6 +12,89 @@ Two workflows that separate **AI thinking** (expensive) from **script execution*
 - **Plan Story**: Story → Refine → Plan → Persist → TDD → Review
 
 Human approves before any external write. AI never touches ADO directly — it produces JSON, scripts do the posting.
+
+## Installation
+
+### From a Marketplace (GitHub Copilot CLI)
+
+First, add the marketplace that hosts this plugin:
+
+```shell
+# Register the marketplace
+copilot plugin marketplace add KevinBrown5280/stolen-ai
+```
+
+Then install the plugin:
+
+```shell
+# Browse available plugins
+copilot plugin marketplace browse stolen-ai
+
+# Install the plugin
+copilot plugin install stolen-ai@stolen-ai
+```
+
+Or in an interactive Copilot CLI session:
+
+```
+/plugin marketplace add KevinBrown5280/stolen-ai
+/plugin install stolen-ai@stolen-ai
+```
+
+Plugins installed via the CLI are automatically discovered by VS Code from `~/.copilot/installed-plugins/`.
+
+### From VS Code
+
+First, add the marketplace in your VS Code settings:
+
+```jsonc
+// settings.json
+"chat.plugins.marketplaces": [
+    "KevinBrown5280/stolen-ai"
+]
+```
+
+Then:
+
+1. Open the Extensions view (`Ctrl+Shift+X`) and type `@agentPlugins` in the search field.
+2. Browse available plugins from configured marketplaces and select **Install**.
+
+Or install directly from the Git repo:
+
+1. Open the Command Palette → **Chat: Install Plugin From Source**
+2. Enter: `https://github.com/KevinBrown5280/stolen-ai`
+
+### Manual (from source)
+
+```powershell
+# Clone the repo
+git clone https://github.com/KevinBrown5280/stolen-ai.git
+
+# Copy the plugin into your Copilot installed-plugins directory
+# Windows:
+Copy-Item -Recurse .\stolen-ai\plugins\stolen-ai "$env:USERPROFILE\.copilot\installed-plugins\stolen-ai\stolen-ai"
+
+# Or symlink for development:
+New-Item -ItemType Junction -Path "$env:USERPROFILE\.copilot\installed-plugins\stolen-ai\stolen-ai" -Target (Resolve-Path .\stolen-ai\plugins\stolen-ai)
+```
+
+### Use as a Local Plugin (VS Code)
+
+If you've cloned this repo locally, register it via VS Code settings:
+
+```jsonc
+// settings.json
+"chat.pluginLocations": {
+    "C:/path/to/stolen-ai/plugins/stolen-ai": true
+}
+```
+
+### Prerequisites
+
+- VS Code with GitHub Copilot Chat (agent plugins preview enabled: `chat.plugins.enabled: true`)
+- PowerShell 7+
+- `az` CLI authenticated (for ADO API calls via `az boards`)
+- GitHub CLI 2.90+ (for `gh skill` / `copilot plugin` commands)
 
 ## Quick Start
 

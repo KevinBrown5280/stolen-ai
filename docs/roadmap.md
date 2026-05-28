@@ -99,58 +99,30 @@ Currently plan-story always decomposes a Story into a task DAG (2-4 hour units) 
 - If multi-step: existing DAG decomposition as-is
 - Micro-review still runs once at the end regardless
 
-## Plugin Distribution
+## IaC Agent (infra-coder)
 
-**Trigger:** PoC validated end-to-end, team ready to share across repos/workspaces.
+**Trigger:** Stories produced by plan-story involve infrastructure-as-code (Terraform, Bicep) rather than application code.
 
-> ✅ **Completed** — plugin structure implemented at `plugins/stolen-ai/`. Retained below for reference on path resolution design decisions.
+`code-story` is oriented toward app code TDD loops — it doesn't understand plan/apply workflows, provider constraints, state management, or module composition. An IaC-specific agent would sit alongside `code-story` and handle infra tasks within the same plan-story pipeline.
 
-When ready to share as an installable plugin (like `adversarial-review@fun-with-copilot`):
+**Responsibilities:**
+- Terraform/Bicep module structure and composition
+- `terraform validate` / `terraform plan` as the "red" step (analogous to failing test)
+- Linting (tflint, checkov, bicep linter) as guardrails
+- State-aware drift detection (plan output diff)
+- Provider version constraints and deprecation awareness
+- Module registry lookups for reuse
 
-### What a plugin needs
+**Implementation:**
+- New `infra-coder.agent.md` in `plugins/stolen-ai/agents/`
+- `plan-story` routes to `infra-coder` vs `code-story` based on a signal from refine-story (e.g. `implementationType: "iac" | "app"`)
+- Micro-review still runs post-task — checks plan output stability and naming conventions
+- No new schema needed — task DAG structure is the same, only the execution strategy differs
 
-```
-plugin.json              # Manifest (name, description, agents: "agents/", skills: "skills/")
-agents/                  # .agent.md files (or paths in plugin.json)
-skills/                  # SKILL.md directories
-```
-
-> Directory-based registration means all `.agent.md` files in `agents/` and all `SKILL.md` files in `skills/*/` are auto-registered.
-
-Installed via `/plugin install <name>@<marketplace-source>`. Files land in `~/.copilot/installed-plugins/<source>/<plugin>/`.
-
-### Steps to convert StolenAi
-
-1. **Add `plugin.json`** at repo root:
-   ```json
-   {
-     "name": "stolen-ai",
-     "description": "AI-assisted Feature and Story planning workflows for Azure DevOps teams.",
-     "author": { "name": "Kevin" },
-     "repository": "https://github.com/Benefits-Outsourcing/StolenAi",
-     "license": "MIT",
-     "keywords": ["ado", "plan-feature", "plan-story", "tdd", "agile"],
-      "agents": "agents/",
-      "skills": "skills/"
-   }
-   ```
-
-2. **Fix script path resolution** — when installed as a plugin, the working directory is the user's workspace, not the plugin folder. Options:
-   - Introduce a variable/convention that resolves to the plugin install directory
-   - Have agents locate scripts via `$env:COPILOT_PLUGIN_DIR` or similar (check what's available at the time)
-   - Duplicate scripts into the user's workspace on first run (messy, avoid)
-
-3. **Choose hosting model**:
-   - **Standalone marketplace source**: `Benefits-Outsourcing/StolenAi` as its own repo
-   - **Multi-plugin repo** (like `fun-with-copilot`): move into `plugins/stolen-ai/` inside a shared repo
-
-4. **Schemas and output** — `schemas/` ships with the plugin. `output/` is always workspace-local (gitignored).
-
-### What does NOT need to change for local dev
-
-- `plugins/stolen-ai/agents/` and `plugins/stolen-ai/skills/` load as workspace agents/skills when working inside the repo
-- Adding `plugin.json` has zero effect on local behavior — it's only consumed by `/plugin install`
-- Both mechanisms coexist: local workspace convention + plugin manifest
+**Open questions:**
+- Should it handle both Terraform and Bicep, or split into two agents?
+- How to handle `terraform apply` gate — always dry-run (`-plan`) within the agent, require human approval for apply?
+- Integration with existing Terraform Agent (available as a sub-agent) vs. standalone instructions?
 
 ## Fetch Discussion Comments in fetch-feature.ps1
 
