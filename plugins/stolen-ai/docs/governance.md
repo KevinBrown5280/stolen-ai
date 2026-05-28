@@ -49,6 +49,8 @@ No Feature may be sliced, and no Story may be planned, without first completing 
 | Write to `output/` directory | Yes | Metrics, review files, stories.json |
 | Write to `specs/` directory | Yes | Only after human approves plan |
 | Invoke sub-agents | Yes | Only within defined workflow steps |
+| Designer agent tools (`read`, `search`, Figma MCP tools) | Yes | For UI/UX design, styling, and component appearance tasks |
+| Designer writes to ADO or pushes to git | **No** | Never; requires explicit human approval via scripts/workflow checkpoints |
 | Run scripts in dry-run mode | Yes | Always |
 | Run scripts that write externally | **No** | Only after human confirmation |
 
@@ -73,7 +75,7 @@ No Feature may be sliced, and no Story may be planned, without first completing 
 
 All AI ↔ Script boundaries are governed by JSON Schema:
 - `schemas/stories-output.schema.json` — slice agent → post-stories script
-- `schemas/plan-output.schema.json` — refine-story → persist-plan script
+- `schemas/spec-output.schema.json` — refine-story → persist-spec script
 - `schemas/metrics-entry.schema.json` — orchestrator → metrics.jsonl
 
 Agents MUST produce valid JSON against the relevant schema. Scripts MUST validate input before executing.

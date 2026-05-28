@@ -152,3 +152,7 @@ The [Agentic-Agile template](https://github.com/microsoft/agentic-agile-template
 | D6 Governance Health | **Escaped defects** | Direct mapping. |
 | D7 Cost Efficiency | **durationMinutes** as human-time proxy | Agent compute cost (tokens) not exposed by Copilot telemetry. Duration is the only honest cost signal available. Deferred until telemetry available. |
 | D8 Process Maturity | **Roadmap + retrospective template** | Not a per-run metric. Self-assessment captured through roadmap progression and retrospective reviews. |
+
+## Storage
+
+`metrics/metrics.jsonl` is workspace-local and gitignored. Each team's metrics stay in their workspace. If you need shared history, remove `metrics/` from `.gitignore` in your project.

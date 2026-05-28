@@ -1,6 +1,6 @@
 # Dev Grill — Output Format
 
-When grilling is complete, produce JSON matching `schemas/plan-output.schema.json`.
+When grilling is complete, produce JSON matching `schemas/spec-output.schema.json`.
 
 ## Example
 

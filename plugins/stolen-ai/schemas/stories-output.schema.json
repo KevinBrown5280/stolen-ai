@@ -3,6 +3,8 @@
   "title": "PO Workflow - Stories Output",
   "description": "Contract between the Slice agent and the Post script. Array of User Stories to create in ADO under a Feature.",
   "type": "array",
+  "minItems": 1,
+  "maxItems": 8,
   "items": {
     "type": "object",
     "required": ["title", "description", "acceptanceCriteria", "briefMarkdown"],

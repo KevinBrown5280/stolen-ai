@@ -16,10 +16,10 @@ AI-assisted ADO workflows. Two pipelines: Plan Feature (Feature → Stories) and
 
 ## File Conventions
 
-- `scripts/` — PowerShell, no AI, zero tokens
-- `.github/skills/` — interactive (SKILL.md, agentskills.io format)
-- `.github/agents/` — autonomous sub-agents (.agent.md)
-- `schemas/` — JSON Schema contracts
+- `plugins/stolen-ai/scripts/` — PowerShell, no AI, zero tokens
+- `plugins/stolen-ai/skills/` — interactive (SKILL.md, agentskills.io format)
+- `plugins/stolen-ai/agents/` — autonomous sub-agents (.agent.md)
+- `plugins/stolen-ai/schemas/` — JSON Schema contracts
 - `specs/{feature}/` — one spec per Story
 - `output/{id}/` — ephemeral working files (gitignored)
 

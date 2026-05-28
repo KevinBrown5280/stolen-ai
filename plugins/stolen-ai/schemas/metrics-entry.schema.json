@@ -13,7 +13,7 @@
     "workflow": {
       "type": "string",
       "enum": ["po", "dev"],
-      "description": "Which workflow was executed"
+      "description": "po = plan-feature pipeline, dev = plan-story pipeline"
     },
     "featureId": {
       "type": "integer",

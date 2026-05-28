@@ -21,9 +21,9 @@ It does NOT add value at the task level because tasks within a single story are 
 
 Currently the dev spec (`specs/{feature}/*.md`) lives in git only, with a discussion comment on the ADO Story providing inline visibility. The brief is already attached to ADO (required — `output/` is ephemeral and `fetch-story.ps1` pulls it for refine-story).
 
-Attaching the dev spec alongside the discussion comment would be ~5 lines in `persist-plan.ps1` — the file already exists on disk at post time and the auth token is already acquired. Marginal runtime cost is one REST upload + one relation add.
+Attaching the dev spec alongside the discussion comment would be ~5 lines in `persist-spec.ps1` — the file already exists on disk at post time and the auth token is already acquired. Marginal runtime cost is one REST upload + one relation add.
 
-**Implementation:** After writing the spec file and posting the discussion comment, upload `specs/{feature}/{storyId}.md` as an attachment on the Story using the same pattern as `post-stories.ps1` brief attachment (REST POST to `_apis/wit/attachments`, then `az boards work-item relation add --relation-type "Attached File"`).
+**Implementation:** After writing `spec.json` and posting the discussion comment, upload `specs/{feature}/{storyId}.md` as an attachment on the Story using the same pattern as `post-stories.ps1` brief attachment (REST POST to `_apis/wit/attachments`, then `az boards work-item relation add --relation-type "Attached File"`).
 
 ## Feature Slice Summary vs. Dev-Driven Story Creation
 
@@ -103,15 +103,19 @@ Currently plan-story always decomposes a Story into a task DAG (2-4 hour units) 
 
 **Trigger:** PoC validated end-to-end, team ready to share across repos/workspaces.
 
+> ✅ **Completed** — plugin structure implemented at `plugins/stolen-ai/`. Retained below for reference on path resolution design decisions.
+
 When ready to share as an installable plugin (like `adversarial-review@fun-with-copilot`):
 
 ### What a plugin needs
 
 ```
-plugin.json              # Manifest (name, description, agents[], skills[])
+plugin.json              # Manifest (name, description, agents: "agents/", skills: "skills/")
 agents/                  # .agent.md files (or paths in plugin.json)
 skills/                  # SKILL.md directories
 ```
+
+> Directory-based registration means all `.agent.md` files in `agents/` and all `SKILL.md` files in `skills/*/` are auto-registered.
 
 Installed via `/plugin install <name>@<marketplace-source>`. Files land in `~/.copilot/installed-plugins/<source>/<plugin>/`.
 
@@ -126,13 +130,8 @@ Installed via `/plugin install <name>@<marketplace-source>`. Files land in `~/.c
      "repository": "https://github.com/Benefits-Outsourcing/StolenAi",
      "license": "MIT",
      "keywords": ["ado", "plan-feature", "plan-story", "tdd", "agile"],
-     "agents": [
-       "./.github/agents/plan-feature.agent.md",
-       "./.github/agents/plan-story.agent.md",
-       "./.github/agents/slice.agent.md",
-       "./.github/agents/micro-review.agent.md"
-     ],
-     "skills": ["./.github/skills/"]
+      "agents": "agents/",
+      "skills": "skills/"
    }
    ```
 

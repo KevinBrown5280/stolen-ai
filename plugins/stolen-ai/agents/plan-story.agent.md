@@ -38,7 +38,7 @@ Invoke the `refine-story` skill. Provide:
 - Story fields (title, description, AC) — AC is the contract
 - The attached .md brief — guidance, not gospel
 
-Continue until the skill produces JSON matching `$PLUGIN_ROOT/schemas/plan-output.schema.json`.
+Continue until the skill produces JSON matching `$PLUGIN_ROOT/schemas/spec-output.schema.json`.
 
 ### Step 3: Review Plan
 Display the proposed task breakdown to the user:
@@ -46,11 +46,12 @@ Display the proposed task breakdown to the user:
 - Dependency graph (which tasks can parallelize)
 - Key technical decisions
 
-Ask: "This is the plan. Approve, edit, or reject?"
+Ask: "This is the implementation spec. Approve, edit, or reject?"
 
 ### Step 4: Persist
-Once approved, run `$PLUGIN_ROOT/scripts/plan-story/persist-plan.ps1` with the plan JSON.
+Once approved, run `$PLUGIN_ROOT/scripts/plan-story/persist-spec.ps1 -InputFile <plan-json-path> -Org <org> -Project <project>` (optional: `-DryRun`, `-SkipPost`).
 Read `-Org` and `-Project` from `.stolenai.json` in the user's workspace root.
+The script writes `specs/{storyId}/spec.json` (authoritative implementation spec — source of truth for code-story and micro-review) and `specs/{storyId}/spec.readme.md` (generated human-readable view — do not edit).
 
 ### Step 5: TDD Loop (Phase-Based Parallel Execution)
 

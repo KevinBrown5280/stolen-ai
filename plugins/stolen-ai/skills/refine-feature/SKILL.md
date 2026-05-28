@@ -13,6 +13,7 @@ Grill the user about the ADO Feature they provide until every branch of ambiguit
 ## Procedure
 
 1. Read `docs/glossary.md` from the workspace root to load the shared vocabulary
+   - If the file does not exist, skip — the workspace may not have established a shared vocabulary yet.
 2. Read the Feature description (may be sparse or vague)
 3. Ask ONE question at a time — explain why you need it, provide your recommended answer
 4. Walk categories in order: Users → Value → Scope → Behavior → Dependencies → Constraints

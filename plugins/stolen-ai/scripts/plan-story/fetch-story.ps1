@@ -28,7 +28,14 @@ if ($item.fields.'System.WorkItemType' -ne 'User Story') {
 # Extract brief from attachments (look for .md files)
 $briefContent = ""
 if ($item.relations) {
-    $attachment = $item.relations | Where-Object { $_.rel -eq "AttachedFile" -and $_.attributes.name -like "*.md" } | Select-Object -First 1
+    $attachments = @($item.relations | Where-Object { $_.rel -eq "AttachedFile" -and $_.attributes.name -like "*.md" })
+    if ($attachments.Count -gt 1) {
+        Write-Warning "Story has $($attachments.Count) .md attachments. Using most recent."
+        $attachment = $attachments | Sort-Object { $_.attributes.resourceCreatedDate } -Descending | Select-Object -First 1
+    }
+    else {
+        $attachment = $attachments | Select-Object -First 1
+    }
     if ($attachment) {
         $token = az account get-access-token --resource "499b84ac-1321-427f-aa17-267ca6975798" --query accessToken -o tsv
         $briefContent = Invoke-RestMethod -Uri $attachment.url -Headers @{ Authorization = "Bearer $token" }

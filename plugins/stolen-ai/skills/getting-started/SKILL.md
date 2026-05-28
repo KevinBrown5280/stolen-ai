@@ -14,7 +14,7 @@ Check if `.stolenai.json` exists in the workspace root. **Important:** This file
 
 **If it does NOT exist (read_file fails):**
 1. Tell the user: "I need to set up your ADO connection first."
-2. Use `vscode_askQuestions` to prompt for:
+2. Ask the user for their ADO Organization and Project. Use the most appropriate interactive prompt available in the current surface.
    - **ADO Organization** — the org name from `dev.azure.com/{org}`
    - **ADO Project** — the project name within that org
 3. Create `.stolenai.json` in the workspace root with their answers:

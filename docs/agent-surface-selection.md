@@ -20,6 +20,7 @@ When to use each execution surface in StolenAi. This codifies Decision 19 from `
 | Transform structured input → structured output (no ambiguity) | Agent | Deterministic enough to run autonomously |
 | Check/validate work against a spec | Agent | Objective criteria, no human input needed |
 | Orchestrate a multi-step workflow | Agent | Coordinates skills + scripts + sub-agents |
+| Task involves visual design, styling, or component appearance | Agent (`designer`) | UI/UX work runs autonomously with read/search/Figma MCP tools |
 | CRUD operations against external systems (ADO, git) | Script | No tokens burned; auditable; reversible via dry-run |
 | Data fetch from APIs | Script | Deterministic, no reasoning needed |
 | File I/O with known format | Script | Cheaper and more reliable than AI |
@@ -50,7 +51,7 @@ Examples: `slice` (structured input → Stories JSON), `micro-review` (diff + sp
 4. **Cost** matters — the operation would waste tokens if done by AI
 5. The task needs to be **auditable** and **reproducible**
 
-Examples: `fetch-feature.ps1` (ADO read), `post-stories.ps1` (ADO write), `persist-plan.ps1` (file + commit + post)
+Examples: `fetch-feature.ps1` (ADO read), `post-stories.ps1` (ADO write), `persist-spec.ps1` (file + commit + post)
 
 ## Anti-Patterns
 
@@ -74,14 +75,15 @@ Examples: `fetch-feature.ps1` (ADO read), `post-stories.ps1` (ADO write), `persi
 
 ```
 Plan Feature:
-  fetch-feature.ps1  →  refine-feature (SKILL)  →  slice (AGENT)  →  post-stories.ps1
+  fetch-feature.ps1  →  refine-feature (SKILL)  →  slice-feature (AGENT)  →  post-stories.ps1
        Script              Skill                 Agent               Script
        [fetch]          [elicit/clarify]      [transform]          [write to ADO]
 
 Plan Story:
-  fetch-story.ps1  →  refine-story (SKILL)  →  persist-plan.ps1  →  coder (AGENT)  →  micro-review (AGENT)
-       Script             Skill                  Script              Agent              Agent
-       [fetch]        [elicit/decide]          [commit/post]     [implement+TDD]      [validate]
+  fetch-story.ps1  →  refine-story (SKILL)  →  persist-spec.ps1  →  code-story (AGENT)  →  micro-review (AGENT)
+       Script             Skill                  Script              Agent                  Agent
+       [fetch]        [elicit/decide]          [commit/post]     [implement+TDD]          [validate]
+                                                                   └→ designer (AGENT) [visual spec, conditional]
 ```
 
 ## Cost Implications

@@ -22,7 +22,7 @@ External influences on StolenAi's design, and how the system relates to each.
 | Burke Holland | Orchestrator never implements; sub-agent delegation; parallel phases | `plan-story.agent.md`, `plan-feature.agent.md` |
 | Matt Pocock | Grill-first pattern; TDD skill structure; write-a-skill conventions | `refine-feature`, `refine-story`, `tdd` skills |
 | AI Hero | Skill as progressive-disclosure unit; daily-use skill design | All SKILL.md files |
-| GitHub Spec Kit | Spec → plan → tasks pipeline; spec as persistent artifact | `persist-plan.ps1`, `specs/` directory |
+| GitHub Spec Kit | Spec → plan → tasks pipeline; spec as persistent artifact | `persist-spec.ps1`, `specs/` directory |
 | Awesome Copilot | Community patterns for agent/skill discovery | README structure, skill triggers |
 | Agentic-Agile | Values, principles, evaluation framework, story structure | See [Agentic-Agile Alignment](#agentic-agile-alignment) below |
 | AX Stack | Discovery/selection/quality/composition measurement lens | `docs/metrics.md` lift-vs-drag protocol |
@@ -46,7 +46,7 @@ External influences on StolenAi's design, and how the system relates to each.
 - **Shared vocabulary** — `docs/glossary.md` defines 12 terms (grill, slice, brief, persist, micro-review, drift, checkpoint, surface, contract, DAG, orchestrator, tracer bullet)
 - **CI/CD from day one** — slice agent notes CI/CD in first story's brief when no pipeline exists; refine-story folds pipeline setup into the tracer bullet
 - **Doc maintenance** — signal-then-decide: micro-review collects `docHints` per phase, plan-story aggregates post-completion, human acts. Avoids both staleness (manual-only) and cost waste (auto-update every change)
-- **Structured story fields** — schema enforcement + `plan-output.schema.json` `files[]` at task level. Stronger than GH issue templates (enforced gate vs. suggestion). File ownership deferred to [roadmap](docs/roadmap.md).
+- **Structured story fields** — schema enforcement + `spec-output.schema.json` `files[]` at task level. Stronger than GH issue templates (enforced gate vs. suggestion). File ownership deferred to [roadmap](docs/roadmap.md).
 - **Lift vs. drag measurement** — comparison protocol in `docs/metrics.md` with `treatment` field in schema. Baseline data collecting (1/3 PO runs).
 
 ## Philosophical Differences (intentional)

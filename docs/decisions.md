@@ -9,7 +9,7 @@ Numbered decisions that are **settled** — revisiting requires explicit justifi
 | 3 | Grill mandatory | Always grill before slicing | ADO items are typically sparse |
 | 4 | Artifact model | Stories ARE the specs (no monolithic spec file) | Each story is self-contained |
 | 5 | PO output | Stories in ADO + attached .md brief per story | ADO scannable, .md has depth |
-| 6 | Dev output | Discussion thread on Story + single local spec file | ADO Tasks too noisy |
+| 6 | Dev output | Discussion thread on Story + local spec files (`spec.json` + `spec.readme.md`) | ADO Tasks too noisy |
 | 7 | Spec location | `specs/{feature}/{storyId}.md` — one file per Story | Cross-session continuity for AI |
 | 8 | AI ↔ Script contract | JSON (schemas in `schemas/`) | Testable, versionable |
 | 9 | Human checkpoint | Always before external writes (ADO, git) | Safety |

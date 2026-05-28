@@ -22,9 +22,9 @@ Human approves before any external write. AI never touches ADO directly — it p
 # 5. Approve → stories posted to ADO
 
 # Manual step-by-step:
-.\scripts\plan-feature\fetch-feature.ps1 -WorkItemId 12345 -Org "myorg" -Project "myproject"
+.\plugins\stolen-ai\scripts\plan-feature\fetch-feature.ps1 -WorkItemId 12345 -Org "myorg" -Project "myproject"
 # → refine (interactive) → slice-feature agent produces stories.json
-.\scripts\plan-feature\post-stories.ps1 -InputFile output/12345/stories.json -ParentId 12345 -Org "myorg" -Project "myproject" -DryRun
+.\plugins\stolen-ai\scripts\plan-feature\post-stories.ps1 -InputFile output/12345/stories.json -ParentId 12345 -Org "myorg" -Project "myproject" -DryRun
 # → review stories-review.md, then run without -DryRun to post
 
 # Plan Story: Pick up a Story and implement
@@ -38,32 +38,44 @@ Human approves before any external write. AI never touches ADO directly — it p
 ## Structure
 
 ```
-.github/
-  skills/                         # Interactive (agentskills.io format)
-    refine-feature/SKILL.md      #   Refine a Feature for slicing
-    refine-feature/references/   #   Output format template
-    refine-story/SKILL.md        #   Refine a Story for implementation
-    refine-story/references/     #   Output format + example JSON
-  agents/                         # Autonomous + orchestration (.agent.md)
-    plan-feature.agent.md         #   Orchestrator: full Feature planning flow
-    plan-story.agent.md           #   Orchestrator: full Story planning flow
-    slice-feature.agent.md        #   Sub-agent: Feature → Stories JSON
-    micro-review.agent.md        #   Sub-agent: drift detection
-scripts/
-  plan-feature/
-    fetch-feature.ps1            # Read Feature from ADO
-    post-stories.ps1             # Validate, dry-run review, or create Stories + attach briefs
-  plan-story/
-    fetch-story.ps1              # Read Story + attached brief
-    persist-plan.ps1             # Write spec, commit, post discussion
-schemas/
-  stories-output.schema.json     # Contract: slice → post script
-  plan-output.schema.json        # Contract: refine-story → persist script
-output/                           # Transient (gitignored)
+plugins/stolen-ai/
+  agents/                          # Autonomous + orchestration (.agent.md)
+    plan-feature.agent.md          #   Orchestrator: full Feature planning flow
+    plan-story.agent.md            #   Orchestrator: full Story planning flow
+    slice-feature.agent.md         #   Sub-agent: Feature → Stories JSON
+    code-story.agent.md            #   Sub-agent: TDD implementation
+    micro-review.agent.md          #   Sub-agent: drift detection
+    designer.agent.md              #   Handles UI/UX design tasks - styling, visual alignment, component appearance
+  skills/                          # Interactive (agentskills.io format)
+    refine-feature/SKILL.md        #   Refine a Feature for slicing
+    refine-feature/references/     #   Output format template
+    refine-story/SKILL.md          #   Refine a Story for implementation
+    refine-story/references/       #   Output format + example JSON
+    getting-started/SKILL.md       #   Onboarding walkthrough
+  scripts/
+    plan-feature/
+      fetch-feature.ps1            # Read Feature from ADO
+      post-stories.ps1             # Validate, dry-run review, or create Stories + attach briefs
+    plan-story/
+      fetch-story.ps1              # Read Story + attached brief
+      persist-spec.ps1             # Write spec, commit, post discussion
+    post-comment.ps1               # Post markdown comment to ADO work item
+  schemas/
+    stories-output.schema.json     # Contract: slice → post script
+    spec-output.schema.json        # Contract: refine-story → persist script
+    metrics-entry.schema.json      # Contract: workflow metrics entries
+  docs/
+    governance.md                  # What agents may/may not do
+    feature-decomposition.md       # Decomposition patterns
+    retrospective-template.md      # Post-workflow retro template
+    story-template.md              # Story template
+  plugin.json                      # Plugin manifest
+output/                            # Transient (gitignored)
   {feature-id}/
-    stories.json                 # Slice agent output
-    stories-review.md            # Human-readable review (from -DryRun)
-    feedback.md                  # PO feedback for revision rounds
+    stories.json                   # Slice agent output
+    stories-review.md              # Human-readable review (from -DryRun)
+    feedback.md                    # PO feedback for revision rounds
+specs/                             # Persisted specs (per Story)
 ```
 
 ## Process Artifacts

@@ -20,6 +20,7 @@ You will receive:
 
 1. **Pre-check:** Look for `copilot-instructions.md` or `.github/copilot-instructions.md` in the workspace root. If absent, warn: "This repo has no copilot-instructions.md — the agent won't know codebase conventions (naming, patterns, formatting). Consider creating one before implementation begins."
 2. Read `docs/glossary.md` from the workspace root to load the shared vocabulary
+   - If the file does not exist, skip — the workspace may not have established a shared vocabulary yet.
 3. Read the Story context
 4. Ask ONE technical question at a time — provide your recommended answer
 5. Explore categories as needed: Architecture → Data → Interface → Reuse → Design → Build/Deploy → Testing → Risk → Dependencies → Order
@@ -106,4 +107,4 @@ Before producing final output, self-check:
 - [ ] Dependencies form a DAG (no circular deps)
 - [ ] Task sizes are 2-4 hours (split if larger, merge if trivially small)
 - [ ] Reuse opportunities surfaced — shared components/styles/utilities either leveraged, extended (as their own task), or consciously rejected with rationale captured in `decisions`
-- [ ] Output matches `$PLUGIN_ROOT/schemas/plan-output.schema.json`
+- [ ] Output matches `$PLUGIN_ROOT/schemas/spec-output.schema.json`
