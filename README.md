@@ -102,7 +102,7 @@ If you've cloned this repo locally, register it via VS Code settings:
 # Plan Feature: Break a Feature into Stories
 # 1. Invoke plan-feature agent (or run steps manually)
 # 2. Provide ADO Feature ID when prompted
-# 3. Answer refinement questions
+# 3. Let refine-feature scan the repo, then answer only the remaining repo-anchored questions
 # 4. Review proposed stories in output/{feature-id}/stories-review.md
 # 5. Approve → stories posted to ADO
 
@@ -115,7 +115,7 @@ If you've cloned this repo locally, register it via VS Code settings:
 # Plan Story: Pick up a Story and implement
 # 1. Invoke plan-story agent (or run steps manually)
 # 2. Provide ADO Story ID when prompted
-# 3. Answer technical refinement questions
+# 3. Let refine-story inspect code/tests/specs/pipeline files, then answer the remaining technical questions
 # 4. Review task plan
 # 5. Approve → spec persisted, TDD begins
 ```
