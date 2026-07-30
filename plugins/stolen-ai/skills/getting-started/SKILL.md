@@ -36,7 +36,7 @@ Say: `@plan-feature process Feature <ID>`
 
 This runs the full pipeline:
 1. **Fetch** — retrieves the Feature from ADO
-2. **Refine** — grills you on ambiguity until the Feature is slice-ready
+2. **Refine** — does a quick repo reconnaissance pass, then grills only on unresolved ambiguity using repo-anchored follow-ups until the Feature is slice-ready
 3. **Slice** — produces independently deliverable User Stories
 4. **Review** — presents stories for your approval (approve/edit/reject)
 5. **Post** — creates Stories in ADO as children of the Feature
@@ -47,7 +47,7 @@ Say: `@plan-story pick up Story <ID>`
 
 This runs the full pipeline:
 1. **Fetch** — retrieves the Story and attached brief from ADO
-2. **Refine** — grills you on technical approach until a task breakdown emerges
+2. **Refine** — inspects the repo surface first (including code, tests, specs, and delivery files), then grills on the remaining technical decisions using concrete repo evidence until a task breakdown emerges
 3. **Review** — presents task plan for approval
 4. **Persist** — writes spec and posts discussion to ADO
 5. **TDD** — executes tasks with red-green-refactor, drift-checked after each
