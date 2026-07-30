@@ -26,6 +26,8 @@ Loaded when working with scripts, output, or session planning. Guides users on H
 | 5. TDD | Automatic — `code-story` agent drives red-green-refactor loop per task | Sub-agent |
 | 6. Micro-review | Automatic after each task — checks for spec drift | Sub-agent |
 
+`fetch-story.ps1` validates its JSON against `plugins/stolen-ai/schemas/fetch-story-output.schema.json`. It downloads ADO-hosted attachments and inline images to `output/<ID>/attachments`, replacing that owned directory only after a complete successful fetch. External image URLs are returned with `status: "skipped"`; `discussionsTruncated` indicates that older comments exist beyond the requested discussion limit.
+
 **Or use the orchestrator:** Say `@plan-story pick up Story <ID>` in chat.
 
 ## Quick Reference — "Where do I type this?"

@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Plan Story - Fetch Output",
+  "description": "Contract between fetch-story.ps1 and the plan-story workflow.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "description",
+    "acceptanceCriteria",
+    "state",
+    "briefMarkdown",
+    "attachments",
+    "inlineImages",
+    "discussions",
+    "discussionsTruncated"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "title": { "type": "string" },
+    "description": { "type": "string" },
+    "acceptanceCriteria": { "type": "string" },
+    "state": { "type": "string" },
+    "parentId": { "type": ["integer", "null"] },
+    "briefMarkdown": { "type": "string" },
+    "attachments": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/attachment" }
+    },
+    "inlineImages": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/inlineImage" }
+    },
+    "discussions": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/discussion" }
+    },
+    "discussionsTruncated": { "type": "boolean" }
+  },
+  "definitions": {
+    "attachment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "path", "size", "resourceCreatedDate"],
+      "properties": {
+        "name": { "type": "string" },
+        "path": { "type": "string" },
+        "size": { "type": "integer", "minimum": 0 },
+        "resourceCreatedDate": { "type": ["string", "null"] }
+      }
+    },
+    "inlineImage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceUrl", "path", "status", "skipReason"],
+      "properties": {
+        "sourceUrl": { "type": "string" },
+        "path": { "type": ["string", "null"] },
+        "status": { "enum": ["downloaded", "skipped"] },
+        "skipReason": { "type": ["string", "null"] }
+      }
+    },
+    "discussion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "author", "createdDate", "modifiedDate", "text", "inlineImages"],
+      "properties": {
+        "id": { "type": "integer" },
+        "author": { "type": "string" },
+        "createdDate": { "type": ["string", "null"] },
+        "modifiedDate": { "type": ["string", "null"] },
+        "text": { "type": "string" },
+        "inlineImages": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/inlineImage" }
+        }
+      }
+    }
+  }
+}

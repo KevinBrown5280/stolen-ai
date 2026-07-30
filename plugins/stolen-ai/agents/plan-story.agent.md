@@ -31,7 +31,11 @@ You are a workflow coordinator. Guide the developer through the Dev workflow ste
 ### Step 1: Fetch Story
 Run `$PLUGIN_ROOT/scripts/plan-story/fetch-story.ps1 -WorkItemId {story-id} -Org {org} -Project {project}` with the Story ID the user provides.
 Read the ADO org and project from `.stolenai.json` in the user's workspace root. If the file does not exist, ask the user for their ADO org and project (format: `https://dev.azure.com/{org}/{project}`), create `.stolenai.json` with `{ "org": "...", "project": "..." }`, then continue.
-Pass the output (including attached .md brief) as context to Step 2.
+Always pass the Story fields, discussions, attached `.md` brief, and inline description images to Step 2.
+
+If `discussionsTruncated` is true, tell the user that only the latest discussion window was fetched before refinement. For any inline image whose `status` is `skipped`, do not claim to have viewed it; identify the source URL and ask for it only when the missing image blocks understanding.
+
+For `attachments`, treat the newest `.md` attachment represented by `briefMarkdown` as already selected. Before Step 2, list every other attachment by name, size, and creation date, then ask the user which ones are relevant. Read and pass only the selected attachments to Step 2. If there are no other attachments, continue without asking.
 
 ### Step 2: Refine Story
 Invoke the `refine-story` skill. Provide:
