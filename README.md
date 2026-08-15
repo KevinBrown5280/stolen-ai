@@ -1,5 +1,3 @@
-> **⚠️ Note:** This project is an unproven work in progress. Proceed with caution!!! ⚠️ 
-> 
 # StolenAi
 
 AI-assisted software engineering workflows for Azure DevOps teams.
