@@ -5,7 +5,7 @@ description: >
   slice into User Stories, review with human, and post to ADO. Use when someone
   wants to break down a Feature, prepare stories for the backlog, or says
   "plan this feature" or "process this feature."
-model: GPT-5.4 (copilot)
+model: GPT-5.6 Terra (copilot)
 tools: ['read', 'execute', 'agent']
 ---
 

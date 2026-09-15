@@ -5,7 +5,7 @@ description: >
   approach, plan tasks with dependencies, persist spec + discussion post,
   then TDD with micro-review after each task. Use when a developer picks
   up a story, wants to plan implementation, or says "plan this story."
-model: Claude Opus 4.6 (copilot)
+model: GPT-5.6 Sol (copilot)
 tools: ['read', 'execute', 'edit', 'agent']
 ---
 
