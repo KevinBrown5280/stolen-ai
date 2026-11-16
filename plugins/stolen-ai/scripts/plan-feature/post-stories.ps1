@@ -113,12 +113,8 @@ $token = az account get-access-token --resource "499b84ac-1321-427f-aa17-267ca69
 $uploadHeaders = @{ Authorization = "Bearer $token"; "Content-Type" = "application/octet-stream" }
 
 # Inherit area/iteration/service line from parent Feature
-$parentJson = az boards work-item show --id $ParentId --org $orgUrl --output json 2>&1
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to fetch parent Feature $ParentId`: $parentJson"
-    exit 1
-}
-$parent = $parentJson | ConvertFrom-Json
+$parentHeaders = @{ Authorization = "Bearer $token" }
+$parent = Invoke-RestMethod -Uri "$orgUrl/_apis/wit/workitems/$($ParentId)?api-version=7.1" -Headers $parentHeaders
 $areaPath = $parent.fields.'System.AreaPath'
 $iterationPath = $parent.fields.'System.IterationPath'
 $serviceLine = $parent.fields.'Tas.ServiceLine'
@@ -137,18 +133,24 @@ foreach ($story in $stories) {
     }
 
     # Create the User Story (simple/safe fields only — rich HTML fields set via REST below)
-    $createJson = az boards work-item create `
+    $createOutput = @(az boards work-item create `
         --type "User Story" `
         --title $story.title `
         --org $orgUrl `
         --project $Project `
         --fields "System.AreaPath=$($areaPath)" "System.IterationPath=$($iterationPath)" "Tas.ServiceLine=$($serviceLine)" "Tas.UserStoryType=User Story" `
-        --output json 2>&1
-    if ($LASTEXITCODE -ne 0) {
+        --query '{id:id,url:url}' `
+        --output json 2>&1)
+    $createExitCode = $LASTEXITCODE
+    if ($createExitCode -ne 0) {
         Write-Warning "Failed to create story: $($story.title)"
-        Write-Warning "$createJson"
+        Write-Warning ($createOutput -join "`n")
         continue
     }
+    foreach ($diagnostic in $createOutput | Where-Object { $_ -is [System.Management.Automation.ErrorRecord] }) {
+        Write-Warning "$diagnostic"
+    }
+    $createJson = @($createOutput | Where-Object { $_ -isnot [System.Management.Automation.ErrorRecord] })
     $item = $createJson | ConvertFrom-Json
     if (-not $item -or -not $item.id) {
         Write-Warning "Failed to create story (no id returned): $($story.title)"

@@ -153,6 +153,53 @@ try {
         }
     }
 
+    Invoke-TestCase "Post stories when Azure CLI emits diagnostics alongside JSON" {
+        param($directory)
+        $inputFile = Join-Path $directory "input.json"
+        Set-Content -LiteralPath $inputFile -Value "[$storyJson]"
+        $scriptPath = (Join-Path $scriptsRoot "plan-feature\post-stories.ps1").Replace("'", "''")
+        $testDirectory = $directory.Replace("'", "''")
+        $inputPath = $inputFile.Replace("'", "''")
+        $wrapper = @"
+`$ErrorActionPreference = 'Stop'
+`$env:TEMP = '$testDirectory'
+function global:az {
+    `$global:LASTEXITCODE = 0
+    if (`$args[0] -eq 'account') { return 'fake-token' }
+    if (`$args[0] -eq 'boards' -and `$args[2] -eq 'show') {
+        return 'WARNING: Unable to encode the output', '{"id":123}'
+    }
+    if (`$args[0] -eq 'boards' -and `$args[2] -eq 'create') {
+        if (`$args -notcontains '--query') { throw 'Create response is not narrowed' }
+        Write-Error -Message 'CLI diagnostic' -ErrorAction Continue
+        return '{"id":98765432,"url":"https://example.test/workitems/98765432"}'
+    }
+    if (`$args[0] -eq 'boards' -and `$args[2] -eq 'relation') { return }
+    throw 'Unexpected Azure CLI invocation'
+}
+function global:Invoke-RestMethod {
+    param(`$Uri, `$Method, `$Headers, `$Body)
+    if (`$Uri -like '*/workitems/123?*' -and -not `$Method) {
+        return [pscustomobject]@{ fields = [pscustomobject]@{
+            'System.AreaPath' = 'Area'
+            'System.IterationPath' = 'Iteration'
+            'Tas.ServiceLine' = 'Service'
+        } }
+    }
+    if (`$Uri -like '*/attachments?*') { return @{ url = 'https://example.test/attachment' } }
+    if (`$Method -in @('Patch', 'Post')) { return @{} }
+    throw 'Unexpected REST invocation'
+}
+& '$scriptPath' -InputFile '$inputPath' -ParentId 123 -Org test-org -Project test-project
+exit `$LASTEXITCODE
+"@
+        $encodedCommand = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($wrapper))
+        $output = & $pwsh -NoProfile -NonInteractive -OutputFormat Text -EncodedCommand $encodedCommand 2>&1
+        if ($LASTEXITCODE -ne 0 -or ($output -join "`n") -notmatch 'Created Story #98765432') {
+            throw "Posting failed on mixed CLI output: $($output -join "`n")"
+        }
+    }
+
     Invoke-TestCase "Reject an incomplete spec before creating files" {
         param($directory)
         $inputFile = Join-Path $directory "input.json"
