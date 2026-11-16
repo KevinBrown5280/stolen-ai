@@ -10,6 +10,8 @@ description: >
 
 Grill the developer about their implementation approach for the User Story provided. Resolve all technical unknowns until you can produce a task breakdown with dependencies.
 
+**Read [the grilling protocol](../../docs/grilling-protocol.md) first.** It defines the shared turn rules (one question per message, with a recommendation), evidence-first questioning, the rewrite-in-place decision record, and glossary maintenance. This skill adds Story-specific technical categories below.
+
 ## Context
 
 You will receive:
@@ -19,8 +21,7 @@ You will receive:
 ## Procedure
 
 1. **Pre-check:** Look for `copilot-instructions.md` or `.github/copilot-instructions.md` in the workspace root. If absent, warn: "This repo has no copilot-instructions.md — the agent won't know codebase conventions (naming, patterns, formatting). Consider creating one before implementation begins."
-2. Read `docs/glossary.md` from the workspace root to load the shared vocabulary
-   - If the file does not exist, skip — the workspace may not have established a shared vocabulary yet.
+2. Load the shared vocabulary per the protocol's Glossary Maintenance section
 3. Read the Story context
 4. Before asking anything, do a focused reconnaissance pass over the owning surface
   - Read the files most likely to decide the behavior: the attached brief, nearby agents/skills/scripts, relevant docs under `docs/` and `plugins/stolen-ai/docs/`, existing specs, tests, and any build/deploy files that constrain the implementation.
@@ -28,45 +29,10 @@ You will receive:
 5. Ask ONE technical question at a time — provide your recommended answer
 6. Explore categories as needed: Architecture → Data → Interface → Reuse → Design → Build/Deploy → Testing → Risk → Dependencies → Order
 7. Focus on HOW, not WHAT (requirements are locked in the AC)
-8. Track technical decisions as they lock
+8. Track technical decisions as they lock, rewriting the decision record in place
 9. When resolved, produce JSON output (see [output format](references/output-format.md))
 
-## Evidence-First Grilling
-
-Before each question:
-- Decide whether the answer can be proven from repo evidence first. If yes, inspect the code, tests, docs, scripts, or pipeline files instead of asking.
-- Anchor follow-up questions to evidence: "I found `<path>` doing `<behavior>`. Keep that pattern, extend it, or replace it?"
-- When code, tests, docs, or the brief disagree, surface the conflict explicitly and resolve it before planning tasks.
-- Prefer the narrowest question that unlocks the next technical decision; do not ask the developer to rediscover facts the repo already contains.
-
-During the grill:
-- Cross-check claims about current behavior against the codebase. If the developer says the system works one way but the repo shows another, force the contradiction into the open.
-- Use concrete scenarios and failure modes to pressure-test the plan, especially around state transitions, error handling, data ownership, permissions, and integration boundaries.
-- Separate proven behavior from intended behavior. "We should" is not the same as "we already do."
-
-## Glossary Maintenance
-
-During grilling, when a new domain term is resolved or an existing term's meaning is clarified:
-- Challenge the user if they use a term that conflicts with the glossary ("The glossary defines X as Y, but you seem to mean Z — which is it?")
-- When a new term is locked, update `docs/glossary.md` inline — add the term to the table immediately, don't batch
-- When an existing term's definition is sharpened, update it in place
-- Only add terms specific to this project's domain — not general programming concepts
-
-**Entry format** (append to the existing table):
-```
-| **Term** | One-sentence definition. Context on when/where it applies. |
-```
-Rules:
-- Bold the term name
-- Definition is one sentence max — define what it IS, not what it does
-- If a synonym should be avoided, append: `(avoid: X, Y)`
-- Keep alphabetical order within the table
-- If the new term relates to existing terms, add a line to `## Relationships` showing direction and cardinality
-- If the term was ambiguous and got resolved, add an entry to `## Flagged Ambiguities` documenting the confusion and resolution
-
-Skip categories where the brief already provides a clear answer. If a question can be answered by exploring the codebase, explore the codebase instead of asking.
-
-If the Story references a domain term that is absent from the glossary but clearly established elsewhere in the repo, read that usage before asking for a definition. If the meaning is still ambiguous, then ask and update the glossary.
+Skip categories where the brief already provides a clear answer. Cross-check developer claims about current behavior against the codebase; if they disagree, force the contradiction into the open.
 
 ## Reuse Category
 
@@ -103,6 +69,15 @@ If the proposed approach introduces a library or external API not already used i
 
 If the repo already uses that dependency elsewhere, inspect the existing call sites first and prefer the established local pattern unless there is a concrete reason to diverge.
 
+## Testing Category
+
+Agree the test seams during the grill, before code-story writes tests:
+- Name the public interface each task will exercise and the observable AC behavior it proves. Include relevant failure cases and affected existing consumers, not tests of private methods or internal call counts.
+- Inspect the repo's test/build/lint commands and nearby tests. Put the actual targeted command and test file paths in `testStrategy` and `files`; do not invent a runner or mandate a full suite by default.
+- For a bug fix, specify a regression that fails on the original symptom. Expected results come from the AC or independent fixtures, not a copy of the implementation.
+- If automation is impractical, start `testStrategy` with "Manual" and give a reproducible procedure with an explicit pass/fail condition. Identify any check that requires human access.
+- Include new test/fixture files in task ownership. Identify shared mutable resources such as migrations, generated files, or build outputs; require sequential execution unless independence is proven.
+
 ## Tracer Bullet Detection
 
 During the **Dependencies** category, ask: "Does this Story touch any integration or architectural layer that hasn't been proven in this codebase before?" (e.g., new external API, new protocol, new infrastructure component.)
@@ -130,8 +105,10 @@ If a tracer bullet is needed:
 
 Before producing final output, self-check:
 - [ ] I inspected the owning code/docs/tests/pipeline surface before asking questions the repo could answer
+- [ ] I asked one question per message and kept the decision record rewritten in place (no Q&A log in the output)
 - [ ] Any contradiction between the brief, code, tests, docs, or developer statements was surfaced and resolved or captured in `openQuestions`
 - [ ] Every task has enough detail for a TDD agent to execute without asking questions
+- [ ] Each testStrategy names an agreed public interface, observable result, and runnable command or manual procedure; test/fixture ownership and shared mutable resources are accounted for
 - [ ] Dependencies form a DAG (no circular deps)
 - [ ] Task sizes are 2-4 hours (split if larger, merge if trivially small)
 - [ ] Reuse opportunities surfaced — shared components/styles/utilities either leveraged, extended (as their own task), or consciously rejected with rationale captured in `decisions`

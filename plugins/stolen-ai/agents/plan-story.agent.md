@@ -5,7 +5,7 @@ description: >
   approach, plan tasks with dependencies, persist spec + discussion post,
   then TDD with micro-review after each task. Use when a developer picks
   up a story, wants to plan implementation, or says "plan this story."
-model: GPT-5.6 Sol (copilot)
+model: GPT-6.1 Sol (copilot)
 tools: ['read', 'execute', 'edit', 'agent']
 ---
 
@@ -53,35 +53,44 @@ Display the proposed task breakdown to the user:
 Ask: "This is the implementation spec. Approve, edit, or reject?"
 
 ### Step 4: Persist
-Once approved, run `$PLUGIN_ROOT/scripts/plan-story/persist-spec.ps1 -InputFile <plan-json-path> -Org <org> -Project <project>` (optional: `-DryRun`, `-SkipPost`).
+Explain that Persist writes local spec files, commits them to the current branch, and posts an ADO discussion. Obtain explicit approval for those actions; approval of the plan alone is not permission to commit or post.
+
+Only after approval, run `$PLUGIN_ROOT/scripts/plan-story/persist-spec.ps1 -InputFile <plan-json-path> -Org <org> -Project <project>` (optional: `-DryRun`, `-SkipPost`).
 Read `-Org` and `-Project` from `.stolenai.json` in the user's workspace root.
 The script writes `specs/{storyId}/spec.json` (authoritative implementation spec — source of truth for code-story and micro-review) and `specs/{storyId}/spec.readme.md` (generated human-readable view — do not edit).
 
 ### Step 5: TDD Loop (Phase-Based Parallel Execution)
 
-Group tasks into phases using the DAG dependencies AND file overlap:
-1. **Phase 1** = all tasks with no unmet dependencies (typically the tracer bullet)
-2. **Phase 2** = tasks whose dependencies were all completed in earlier phases
-3. Continue until all tasks are assigned to a phase
-4. **File overlap check:** Within each phase, compare `files` arrays. If two tasks share any file, move the later one (by task order) to the next phase. Repeat until no overlap within any phase.
+Validate that task IDs are unique, dependency references exist, and the graph is acyclic before execution. Resolve missing file ownership or test strategies during refinement rather than treating missing information as permission to parallelize.
+
+Build each phase from the **ready frontier**, not a precomputed phase list:
+1. Ready tasks have all dependencies completed and accepted by micro-review in earlier phases.
+2. In original task order, select ready tasks whose owned files do not overlap tasks already selected. Resolve paths from the workspace root, including new files, tests, and fixtures.
+3. Parallelize only when mutable-state independence is also proven. Shared migrations, generated files, build outputs, or other mutable resources require sequential execution unless already isolated.
+4. Defer conflicting tasks, then recompute the frontier after the phase finishes. Moving a task must also delay its dependents.
+5. If unfinished tasks remain but none are ready, pause and report the invalid/blocked graph; do not invent dependencies or mark work done.
 
 For each phase:
-1. Identify all tasks in this phase.
-2. **Spawn code-story sub-agents in parallel** — invoke one `code-story` agent per task simultaneously (multiple `runSubagent` calls in a single batch). Each code-story receives:
+1. Capture a task-local baseline for each selected task, including tracked and untracked owned files and pre-existing user edits. Keep baseline artifacts outside task ownership.
+2. **Spawn code-story sub-agents in parallel** — invoke one fresh `code-story` agent per selected task simultaneously (multiple `runSubagent` calls in a single batch). Each code-story receives:
    - **What to build**: task `description` (this is the implementation spec)
    - **What to test**: task `testStrategy` (these are the behaviors to verify)
    - **Scope**: only the files/interfaces mentioned in the task — do not expand scope
+   - **Context pointers**: approved `spec.json` path, task ID, relevant ADRs, phase ownership, and validation commands; do not send the grill transcript
    - If `testStrategy` starts with "Manual" or is absent → code-story implements directly, no TDD
    - If `testStrategy` specifies automated tests → code-story runs TDD (skip planning phase, begin at first test)
-3. Wait for all code-story sub-agents in the phase to complete.
-4. After each task completes, invoke `micro-review` agent with the diff.
-5. If micro-review reports "drift_detected" with severity "blocking" → pause and show findings to user. User decides: fix or override.
-6. Report phase completion to the user: "Phase {n} complete ({x}/{total} tasks done). Starting Phase {n+1}." Include a one-line summary of what each completed task built.
-7. Once all tasks in the phase pass micro-review, move to the next phase.
+3. Wait for all code-story sub-agents in the phase to complete. Check each report: failed tests, failed/unrun required validation, missing evidence, or proposed unlisted writes pause advancement. Verify the report against actual state — the baseline-relative diff must match `filesModified`/`filesCreated` and contain no unlisted paths — rather than trusting the self-report. Resolve the plan/ownership with the human before a fresh retry; do not let downstream tasks run on incomplete work.
+4. Invoke `micro-review` for each task with its baseline-relative diff (including created files), task ID, approved spec, relevant ADRs/standards, and completion report. Exclude peer-task and pre-existing user changes; if the diff cannot be isolated reliably, pause instead of reviewing a mixed diff.
+5. If micro-review reports a `blocking` finding:
+   - `verdict: needs_validation` → invoke ONE fresh `micro-review` in re-check mode with only that finding, the task diff, and the spec (no prior review output or reasoning). If it does not confirm, downgrade the finding to a warning, log it in the phase summary, and continue. If confirmed, treat as below.
+   - `verdict: confirmed` → pause and show findings to user. User decides: fix or override.
+   Never re-check more than once per finding, and never re-check `confirmed` findings.
+6. Run any agreed phase-level integration checks needed for the combined changes, using the smallest existing commands.
+7. Only after checks and micro-review are accepted, report phase completion with a one-line summary per task, then compute the next frontier. Do not announce completion or unlock dependents before these gates pass.
 
-**File conflict prevention:** Tasks in the same phase MUST touch non-overlapping files (guaranteed by the plan's file ownership). If two tasks share a file, they must be in different phases (sequential).
+**Conflict prevention:** Task ownership includes tests and fixtures. code-story must stop before an unlisted write so ownership can be resolved before a collision. Agents must not stage, commit, stash, or change branches while phase workers are running.
 
-**Commit convention:** After each phase completes and passes micro-review, commit the phase's changes with a multi-line message:
+**Commit convention:** After a phase passes its checks and micro-review, propose a commit of only that phase's changes. Obtain explicit human approval before staging or committing; phase completion is not approval. Leave unrelated staged/unstaged user work untouched. Use a multi-line message:
 ```
 feat(phase-{n}): {brief phase summary} AB#{story-id}
 
@@ -92,8 +101,8 @@ Tasks completed:
 The `AB#` suffix auto-links the commit to the ADO Story. Ask the user before pushing.
 
 ### Step 6: Complete
-When all tasks pass micro-review:
-1. Generate a completion summary markdown covering what was built (one bullet per task).
+When all tasks pass their required validation and micro-review:
+1. Generate a completion summary covering what was built (one bullet per task), actual validation commands/results, and any explicitly accepted limitations.
 2. Write it to `output/{story-id}/completion-summary.md`.
 3. Ask the user: "Post completion summary to ADO Story discussion? (yes/no)"
 4. If approved, run `$PLUGIN_ROOT/scripts/post-comment.ps1 -WorkItemId {story-id} -File "output/{story-id}/completion-summary.md" -Org {org} -Project {project} -Label "plan-story"`.
@@ -142,7 +151,10 @@ Full safety constraints: `$PLUGIN_ROOT/docs/governance.md` (read it if uncertain
 
 - Always wait for human approval at Step 3 before Step 4
 - Never commit code or post to ADO without explicit human confirmation
-- If micro-review detects blocking drift, STOP and surface to user
+- If micro-review detects confirmed blocking drift (after any Step 5.5 re-check), STOP and surface to user
 - Tasks with no dependencies on each other can run as parallel sub-agents
 - Never skip the grill phase (Step 2) even if the user asks
 - Never expand scope beyond the current Story's AC
+- **Document precedence** (governance § Document Precedence): approved `spec.json` > its decisions/negativeConstraints > ADRs > Story AC/brief > glossary. A spec-vs-AC conflict pauses for the human.
+
+**Script exit codes:** `0` success; `1` runtime/external failure — stop and report the output; `2` caller-fixable contract failure — stderr has one JSON line with `error`, `repairHint`, and optional `allowedValues`. On exit 2 from `fetch-story.ps1` or `persist-spec.ps1`, apply the `repairHint` (ask the user for a corrected ID, or fix the plan JSON's structure) and retry once; stop on a second failure. Any fix that changes approved plan content returns to Step 3 for review.

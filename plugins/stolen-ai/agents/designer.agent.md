@@ -5,7 +5,7 @@ description: >
   codebase patterns, or first-principles design decisions. Invoked by code-story
   when visual choices must be made and the plan doesn't fully specify them.
   Never writes implementation code.
-model: Claude Sonnet 5 (copilot)
+model: Claude Sonnet 5.5 (copilot)
 tools: ['read', 'search', 'mcp_figma_get_design_context', 'mcp_figma_get_screenshot', 'mcp_figma_search_design_system', 'mcp_figma_get_metadata']
 ---
 

@@ -7,7 +7,7 @@ Shared vocabulary for StolenAi. Use these terms precisely to prevent drift acros
 | **Grill** | Interactive questioning phase (via a skill) that fills gaps in a sparse ADO item and locks decisions before downstream work begins. Always mandatory before slice or plan. Invoked via the `refine-feature` or `refine-story` skills. |
 | **Slice** | Decomposing a grilled Feature into independently deliverable User Stories with acceptance criteria, file ownership, and attached briefs. Performed by the `slice-feature` agent. |
 | **Brief** | The `.md` document attached to each Story providing depth beyond ADO fields (context, constraints, edge cases). Generated at slice time; can be regenerated. |
-| **Persist** | Atomic step that writes `spec.json` + `spec.readme.md`, commits to git, and posts an ADO discussion thread — all in one script invocation. |
+| **Persist** | Single-script step that writes `spec.json` + `spec.readme.md`, commits to git, and posts an ADO discussion thread, in that order. Not transactional (avoid: atomic). |
 | **Micro-review** | Autonomous post-task check that compares the diff against the approved spec. Produces structured findings. Runs after each TDD task completes. |
 | **Drift** | When implementation diverges from the approved spec. May be intentional (spec was wrong) or accidental (missed constraint). Always pauses for human decision. |
 | **Checkpoint** | Human approval gate before any external write (ADO post, git push, attachment). Architecturally enforced — scripts require explicit confirmation. |

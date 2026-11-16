@@ -6,6 +6,7 @@ External influences on StolenAi's design, and how the system relates to each.
 
 - [Burke Holland's orchestrator pattern](https://gist.github.com/burkeholland/0e68481f96e94bbb98134fa6efd00436) — sub-agent delegation, parallel phases, never implements itself
 - [Matt Pocock's skills](https://github.com/mattpocock/skills) — grill-me, tdd, write-a-skill patterns
+- [Uncle Bob's ub-mode](https://github.com/unclebob/ub-mode) — verifiable increments, behavioral tests, input validation, and mutable-state discipline
 - [AI Hero (aihero.dev)](https://www.aihero.dev/) — [5 agent skills I use every day](https://www.aihero.dev/5-agent-skills-i-use-every-day), [video walkthrough](https://www.youtube.com/watch?v=-QFHIoCo-Ko)
 - [GitHub Spec Kit](https://github.com/github/spec-kit) — spec → plan → tasks pipeline
 - [Awesome Copilot](https://awesome-copilot.github.com/) — curated patterns and extensions
@@ -14,19 +15,62 @@ External influences on StolenAi's design, and how the system relates to each.
 - [microsoft/agentic-agile-template](https://github.com/microsoft/agentic-agile-template) — starter repo with agent context files, issue templates, docs
 - [The AX Stack: What's Fixed, Where You Can Win](https://developer.microsoft.com/blog/the-ax-stack-whats-fixed-where-you-can-win) — Waldek Mastykarz (Agent Experience measurement: discovery, selection, quality, composition, lift vs. drag)
 - [agentskills.io](https://agentskills.io/) — open standard for portable skills (VS Code, VS 2026, CLI, Cursor, Claude Code)
+- [Atlassian: Jira depth on demand](https://www.atlassian.com/blog/how-we-build/jira-depth-on-demand) — compact tool output, repair hints on errors, verify final state
+- [Spotify: Portal cut Claude Code token usage by 90%](https://engineering.atspotify.com/2026/9/portal-by-spotify-cut-my-claude-code-token-usage-by-90) — terse sub-agent output, delegation of mechanical work
+- [google/elephant-goldfish-model](https://github.com/google/elephant-goldfish-model) — drift taxonomy, one question per turn, rewrite-not-append drafts
+- [humanlayer/humanlayer](https://github.com/humanlayer/humanlayer) — research → plan → implement, document precedence
+- [deepseek-ai/dsh-superagent-prototype](https://github.com/deepseek-ai/dsh-superagent-prototype) — decisions over transcripts
+- [cloudflare/security-audit-skill](https://github.com/cloudflare/security-audit-skill) — confirmed vs. needs-validation verdicts, fresh-context re-check
+- [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) — Always / Ask first / Never boundaries, security checklist
+- Uncle Bob's [crapper](https://github.com/unclebob/crapper), [dryer](https://github.com/unclebob/dryer), [mutator](https://github.com/unclebob/mutator), [uml-viewer](https://github.com/unclebob/uml-viewer) — reviewed; quality-gate CLI conventions (exit codes) only
 
 ## What We Took From Each
 
 | Source | What StolenAi adopted | Where it lives |
 |--------|----------------------|----------------|
 | Burke Holland | Orchestrator never implements; sub-agent delegation; parallel phases | `plan-story.agent.md`, `plan-feature.agent.md` |
-| Matt Pocock | Grill-first pattern; TDD skill structure; write-a-skill conventions | `refine-feature`, `refine-story`, `tdd` skills |
+| Matt Pocock | Grill-first pattern; public test seams; TDD evidence; spec/correctness review lenses; progressive disclosure | `refine-feature`, `refine-story`, `code-story`, `micro-review` |
+| Uncle Bob | Verify small increments; validate incoming contracts; isolate mutable state before parallel work | `post-stories.ps1`, `persist-spec.ps1`, `code-story`, `plan-story` |
 | AI Hero | Skill as progressive-disclosure unit; daily-use skill design | All SKILL.md files |
 | GitHub Spec Kit | Spec → plan → tasks pipeline; spec as persistent artifact | `persist-spec.ps1`, `specs/` directory |
 | Awesome Copilot | Community patterns for agent/skill discovery | README structure, skill triggers |
 | Agentic-Agile | Values, principles, evaluation framework, story structure | See [Agentic-Agile Alignment](#agentic-agile-alignment) below |
 | AX Stack | Discovery/selection/quality/composition measurement lens | `docs/metrics.md` lift-vs-drag protocol |
+| Elephant-Goldfish Model | Drift categories; report differences only; one question per turn; decision record rewritten in place | `micro-review`, `plugins/stolen-ai/docs/grilling-protocol.md` |
+| Cloudflare security-audit / addyosmani | `confirmed`/`needs_validation` verdicts with one fresh re-check; Always/Ask first/Never security checklist | `micro-review`, `plan-story` Step 5.5, `plugins/stolen-ai/docs/security-checklist.md` |
+| Atlassian / Uncle Bob mutator | Exit code 2 + JSON `repairHint` for caller-fixable input; verify final state, not self-report | `scripts/lib/contract-error.ps1`, `plan-story` Step 5.3, Decision 24 |
+| humanlayer | Explicit document precedence; spec-vs-AC conflict pauses | `governance.md`, `code-story`, `micro-review`, Decision 25 |
+| Spotify / deepseek | Terse JSON-only sub-agent handoffs; decisions not transcripts | `code-story`, `micro-review`, grilling protocol |
+| Matt Pocock (composition) | One shared grilling protocol instead of duplicated sections | `refine-feature`, `refine-story` |
 | agentskills.io | Portable skill format (frontmatter, triggers, references/) | All skills comply with the open spec |
+
+## ub-mode and Matt Pocock Comparison
+
+Reviewed snapshots: [ub-mode `57a8bdd`](https://github.com/unclebob/ub-mode/tree/57a8bdd28e45ed41900ace0bafa2ff76dd9ed70f) and [mattpocock/skills `4ae2317`](https://github.com/mattpocock/skills/tree/4ae2317ddb22b046e26455e4f9c9b3aaaf62212d).
+
+ub-mode is an engineering-discipline skill with mandatory companion quality tools. Matt's repo is a composable skill library covering refinement, implementation, design, review, and diagnosis. StolenAi is narrower: two ADO workflows with JSON contracts and explicit human checkpoints. Keep that specialization rather than importing either process wholesale.
+
+| Concern | Comparison | StolenAi disposition |
+|---------|------------|----------------------|
+| Alignment | Matt emphasizes grilling and shared domain language; ub-mode emphasizes domain modeling and locality | Already present through refinement skills, glossary, decisions, and compressed handoffs |
+| Test quality | Both require observable behavior and an actual failing test; Matt agrees public test seams before implementation | Refine-story now records the seam, targeted command, expected outcome, and test-file ownership; code-story requires behavioral RED evidence and executed validation results |
+| Review | Matt separates standards and spec review; ub-mode requires root-cause fixes and behavior-preserving refactoring | Micro-review retains one low-cost invocation but checks spec alignment and high-confidence correctness separately; failed/unrun required checks cannot count as completion |
+| Parallelism | ub-mode separates mutable state; Matt uses fresh implementers and isolated worktrees over a ready task graph | Plan-story recomputes the ready frontier after every phase, accounts for test/build resource conflicts, and pauses before unlisted writes; it does not introduce automatic branch merges |
+| Contracts | ub-mode validates incoming data; StolenAi already defines stronger machine-readable contracts than prose-only plans | Post-stories and persist-spec now execute their existing JSON schemas before local or external side effects; existing schemas and script parameters remain unchanged |
+| Context | ub-mode keeps the main thread small; Matt uses precise context pointers and progressive disclosure | Pass spec paths/task IDs and compact check results instead of grill transcripts; keep conditional guidance in existing references |
+| Safety | ub-mode proposes automatic commits/pushes/cleanup; Matt's implementation flow can create branches, merge, and update tickets | Intentionally not adopted. Refinement-summary posts and phase commits now have explicit approval instructions; the existing ADO/script split and drift checkpoint remain authoritative |
+
+**Compatibility:** Invalid wrapped stories objects are now rejected instead of silently unwrapped, as the existing contract requires a bare array. The existing nonempty-field and duplicate-key checks remain. DryRun still generates local review/spec artifacts without committing or posting.
+
+**Not adopted:** universal CRAP/duplication thresholds, mandatory crapper/dryer/mutator installation, wholesale redesign, automatic worktree cleanup, or a second general-purpose skill library. Use existing repo checks. Multi-item ADO retry/idempotency and transactional rollback need their own scoped design; this review does not claim to make external writes atomic.
+
+**2026 review — not adopted:** crapper/dryer/mutator as gates (no C# support); uml-viewer (no license; autonomous live editing bypasses the human gate); Spotify hooks and cheap-model delegation (harness-specific); Atlassian deferred tool discovery (Decision 18, no MCP); deepseek/humanlayer autonomy and product surfaces (weaker gates); addyosmani's breadth (argues against a larger surface). Deferred: EGM fast-path, story `blockedBy` edges, `.out-of-scope/` records, confidence-score exit, progress markers. No source argued for removing a pipeline stage.
+
+Only engineering ideas were adapted in original wording. Matt's repo is MIT-licensed; ub-mode has no explicit license in the reviewed snapshot, so its skill text was not copied.
+
+**Validation:** Run `pwsh -NoProfile -File .\tests\workflow-contracts.Tests.ps1`. The dependency-free tests exercise real script interfaces with synthetic inputs and blocked external commands, covering schema rejection before side effects, valid review generation, and local spec persistence/re-persistence.
+
+Prompt changes were checked for consistent handoffs, dependency ordering, and approval gates. No live ADO workflow, commit, or push was performed during this review.
 
 ## Agentic-Agile Alignment
 
@@ -46,7 +90,7 @@ External influences on StolenAi's design, and how the system relates to each.
 - **Shared vocabulary** — `docs/glossary.md` defines 12 terms (grill, slice, brief, persist, micro-review, drift, checkpoint, surface, contract, DAG, orchestrator, tracer bullet)
 - **CI/CD from day one** — slice agent notes CI/CD in first story's brief when no pipeline exists; refine-story folds pipeline setup into the tracer bullet
 - **Doc maintenance** — signal-then-decide: micro-review collects `docHints` per phase, plan-story aggregates post-completion, human acts. Avoids both staleness (manual-only) and cost waste (auto-update every change)
-- **Structured story fields** — schema enforcement + `spec-output.schema.json` `files[]` at task level. Stronger than GH issue templates (enforced gate vs. suggestion). File ownership deferred to [roadmap](docs/roadmap.md).
+- **Structured story fields** — schema enforcement + optional task-level `files[]` in `spec-output.schema.json` (refine-story requires it by procedure; the schema does not). Stronger than GH issue templates (enforced gate vs. suggestion). File ownership deferred to [roadmap](docs/roadmap.md).
 - **Lift vs. drag measurement** — comparison protocol in `docs/metrics.md` with `treatment` field in schema. Baseline data collecting (1/3 PO runs).
 
 ## Philosophical Differences (intentional)

@@ -4,6 +4,8 @@ When grilling is complete, produce JSON matching `schemas/spec-output.schema.jso
 
 ## Example
 
+Commands and paths below illustrate an `Auth.Tests` project; use verified commands and paths from the actual workspace.
+
 ```json
 {
   "storyId": "12345",
@@ -36,24 +38,24 @@ When grilling is complete, produce JSON matching `schemas/spec-output.schema.jso
       "id": "add-reset-token-model",
       "title": "Add password reset token to data model",
       "description": "Create ResetToken entity with userId, token (UUID), expiresAt, usedAt fields. Add migration. Index on token column for lookup.",
-      "testStrategy": "Unit test: token generation, expiration check. Integration: migration runs clean.",
-      "files": ["src/models/ResetToken.cs", "src/migrations/AddResetToken.cs"],
+      "testStrategy": "Automated: token persistence interface stores and retrieves expiry and used state; migration runs clean. Command: dotnet test tests/Auth.Tests/Auth.Tests.csproj --filter FullyQualifiedName~ResetToken.",
+      "files": ["src/models/ResetToken.cs", "src/migrations/AddResetToken.cs", "tests/Auth.Tests/ResetTokenTests.cs"],
       "dependsOn": []
     },
     {
       "id": "reset-request-endpoint",
       "title": "POST /auth/reset-request endpoint",
       "description": "Accepts email, looks up user, generates token, sends email via existing service. Returns 200 regardless (no user enumeration).",
-      "testStrategy": "Unit: handler logic. Integration: email service called with correct template.",
-      "files": ["src/controllers/AuthController.cs", "src/services/ResetRequestHandler.cs"],
+      "testStrategy": "Automated: POST /auth/reset-request returns 200 for known and unknown emails; the known user receives the approved email template through an external-mail fake. Command: dotnet test tests/Auth.Tests/Auth.Tests.csproj --filter FullyQualifiedName~ResetRequest.",
+      "files": ["src/controllers/AuthController.cs", "src/services/ResetRequestHandler.cs", "tests/Auth.Tests/ResetRequestTests.cs"],
       "dependsOn": ["add-reset-token-model"]
     },
     {
       "id": "reset-confirm-endpoint",
       "title": "POST /auth/reset-confirm endpoint",
       "description": "Accepts token + new password. Validates token not expired/used, updates password hash, marks token used.",
-      "testStrategy": "Unit: token validation, password update. Integration: full flow from valid token to changed password.",
-      "files": ["src/controllers/AuthController.cs", "src/services/ResetConfirmHandler.cs"],
+      "testStrategy": "Automated: POST /auth/reset-confirm allows login with the new password for a valid token; expired and used tokens cannot change the password. Command: dotnet test tests/Auth.Tests/Auth.Tests.csproj --filter FullyQualifiedName~ResetConfirm.",
+      "files": ["src/controllers/AuthController.cs", "src/services/ResetConfirmHandler.cs", "tests/Auth.Tests/ResetConfirmTests.cs"],
       "dependsOn": ["add-reset-token-model"]
     }
   ]
@@ -65,7 +67,7 @@ When grilling is complete, produce JSON matching `schemas/spec-output.schema.jso
 - `storyId` must match the ADO work item ID provided at trigger time
 - Task `id` values: kebab-case, descriptive, unique within the plan
 - `dependsOn` references other task `id` values — must exist in the same plan
-- `files` lists every file the task will create or modify — used to detect overlap for parallel phasing
+- `files` lists every file the task will create or modify, including tests and fixtures — used to detect overlap for parallel phasing
 - Tasks with empty `dependsOn` AND non-overlapping `files` can execute in parallel (same phase)
 - Tasks sharing a file must be in different phases (sequential) regardless of `dependsOn`
-- Every task must have a `testStrategy` — the TDD agent uses this to write tests first
+- Every task must have a `testStrategy` naming the agreed public interface, observable behavior, and actual targeted repo command. Manual strategies start with "Manual" and state a reproducible pass/fail procedure.

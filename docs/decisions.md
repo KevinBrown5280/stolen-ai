@@ -19,7 +19,7 @@ Numbered decisions that are **settled** — revisiting requires explicit justifi
 | 13 | Review timing | Micro-review after each task | Catch drift early |
 | 14 | Drift response | Pause for human decision (no auto-fix) | Drift may be intentional |
 | 15 | Cost model | AI = brain, scripts = hands | No tokens burned on CRUD |
-| 16 | Persist step | Writes spec + commits + posts ADO discussion (one script) | Three actions, atomic |
+| 16 | Persist step | Writes spec + commits + posts ADO discussion (one script) | One invocation; steps run sequentially and are not transactional — a later failure leaves earlier steps in place |
 | 17 | Brief attached at slice time | With option to regenerate | Pre-baked, consistent |
 | 18 | No MCP for PoC | Use `az devops` CLI directly from scripts | Simpler, already available |
 | 19 | Format split | Skills (`SKILL.md`) for interactive. Agents (`.agent.md`) for autonomous + orchestration | Skills = portable (agentskills.io). Agents = sub-agent delegation |
@@ -27,3 +27,5 @@ Numbered decisions that are **settled** — revisiting requires explicit justifi
 | 21 | Grill output = compressed summary | Only summary passes to next phase | Prevents context bloat |
 | 22 | .agent.md portability | VS Code, Visual Studio 2026, CLI all support it | Confirmed via fun-with-copilot repo |
 | 23 | agentskills.io compliance | Skills follow the open spec (frontmatter, progressive disclosure, references/) | Portable across all AI tools |
+| 24 | Script exit codes | `0` success, `1` runtime/external failure, `2` caller-fixable contract failure with a JSON `repairHint` on stderr | Orchestrators self-correct AI output without a human round-trip, but never retry past an approval gate |
+| 25 | Document precedence | Approved `spec.json` > its decisions/negativeConstraints > ADRs > Story AC/brief > glossary; spec-vs-AC conflict pauses | Downstream agents resolve conflicts the same way; the AC remains the upstream contract |

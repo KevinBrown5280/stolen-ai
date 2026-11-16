@@ -5,7 +5,7 @@ description: >
   slice into User Stories, review with human, and post to ADO. Use when someone
   wants to break down a Feature, prepare stories for the backlog, or says
   "plan this feature" or "process this feature."
-model: GPT-5.6 Terra (copilot)
+model: GPT-6.1 Terra (copilot)
 tools: ['read', 'execute', 'agent']
 ---
 
@@ -39,7 +39,9 @@ Continue until the skill signals "Ready for slicing: YES."
 Capture the structured summary output. Save it to `output/{feature-id}/grill-summary.md` in the user's workspace root.
 
 ### Step 2b: Post Refinement Summary
-Post the grill summary to the Feature as a Discussion comment so the full refinement context is visible in ADO:
+Ask for explicit approval to post the grill summary to the Feature as a Discussion comment. Refinement completion is not write approval. If declined, keep the local summary and continue to Step 3.
+
+Only after approval, run:
 ```
 $PLUGIN_ROOT/scripts/post-comment.ps1 -WorkItemId {feature-id} -File output/{feature-id}/grill-summary.md -Org {org} -Project {project} -Label "refine-feature"
 ```
@@ -129,3 +131,5 @@ Full safety constraints: `$PLUGIN_ROOT/docs/governance.md` (read it if uncertain
 - If the user rejects, ask what to change and re-run Step 3
 - Never post to ADO without explicit human confirmation
 - Never skip the grill phase (Step 2) even if the user asks
+
+**Script exit codes:** `0` success; `1` runtime/external failure — stop and report the output; `2` caller-fixable contract failure — stderr has one JSON line with `error`, `repairHint`, and optional `allowedValues`. On exit 2 before Step 4 approval, apply the `repairHint` (regenerate the AI output or ask the user for a corrected ID) and retry once; stop on a second failure. On exit 2 in Step 5, do not silently regenerate — corrected stories need a fresh Step 4 review.

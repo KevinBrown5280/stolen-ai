@@ -16,12 +16,13 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot "..\lib\contract-error.ps1")
 
 $item = az boards work-item show --id $FeatureId --org "https://dev.azure.com/$Org" --output json | ConvertFrom-Json
 
 if ($item.fields.'System.WorkItemType' -ne 'Feature') {
-    Write-Error "Work item $FeatureId is not a Feature (found: $($item.fields.'System.WorkItemType'))"
-    exit 1
+    Exit-ContractError -Message "Work item $FeatureId is not a Feature (found: $($item.fields.'System.WorkItemType'))" `
+        -RepairHint "Ask the user for a Feature ID; use plan-story for User Stories." -AllowedValues @('Feature')
 }
 
 $output = @{

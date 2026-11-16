@@ -18,8 +18,13 @@ param(
 
 $ErrorActionPreference = "Stop"
 $orgUrl = "https://dev.azure.com/$Org"
+. (Join-Path $PSScriptRoot "..\lib\contract-error.ps1")
 
-$plan = Get-Content $InputFile -Raw | ConvertFrom-Json
+$rawJson = Get-Content -LiteralPath $InputFile -Raw
+$schemaPath = Join-Path $PSScriptRoot "..\..\schemas\spec-output.schema.json"
+Assert-JsonMatchesSchema -Json $rawJson -SchemaPath $schemaPath `
+    -RepairHint "Regenerate the plan JSON to match spec-output.schema.json; fix the listed properties without changing approved decisions or tasks."
+$plan = $rawJson | ConvertFrom-Json
 
 # --- 1. Write spec files ---
 $specDir = "specs/$($plan.storyId)"

@@ -26,6 +26,7 @@ $ErrorActionPreference = "Stop"
 $orgUrl = "https://dev.azure.com/$Org"
 $adoResource = "499b84ac-1321-427f-aa17-267ca6975798"
 $schemaPath = Join-Path $PSScriptRoot "../../schemas/fetch-story-output.schema.json"
+. (Join-Path $PSScriptRoot "../lib/contract-error.ps1")
 
 if (-not $OutputDirectory) {
     $defaultFolder = [Environment]::GetFolderPath("MyDocuments")
@@ -233,7 +234,8 @@ function Publish-StagedDirectory {
 $item = Get-StoryWorkItem
 
 if ($item.fields.'System.WorkItemType' -ne 'User Story') {
-    throw "Work item $StoryId is not a User Story (found: $($item.fields.'System.WorkItemType'))"
+    Exit-ContractError -Message "Work item $StoryId is not a User Story (found: $($item.fields.'System.WorkItemType'))" `
+        -RepairHint "Ask the user for a User Story ID; use plan-feature for Features." -AllowedValues @('User Story')
 }
 
 New-Item -ItemType Directory -Path $outputParent -Force | Out-Null

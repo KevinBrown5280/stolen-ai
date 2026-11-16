@@ -21,9 +21,13 @@ param(
 
 $ErrorActionPreference = "Stop"
 $orgUrl = "https://dev.azure.com/$Org"
+. (Join-Path $PSScriptRoot "..\lib\contract-error.ps1")
 
 # --- Schema validation ---
-$rawJson = Get-Content $InputFile -Raw
+$rawJson = Get-Content -LiteralPath $InputFile -Raw
+$schemaPath = Join-Path $PSScriptRoot "..\..\schemas\stories-output.schema.json"
+Assert-JsonMatchesSchema -Json $rawJson -SchemaPath $schemaPath `
+    -RepairHint "Regenerate stories JSON as a bare array of 1-8 story objects matching stories-output.schema.json; fix the listed properties."
 
 # Detect duplicate keys (common LLM output defect)
 # Split into individual story objects and check for repeated keys within each
@@ -32,38 +36,25 @@ foreach ($block in $storyBlocks) {
     $keys = [regex]::Matches($block.Value, '"(\w+)"\s*:') | ForEach-Object { $_.Groups[1].Value }
     $dupes = $keys | Group-Object | Where-Object { $_.Count -gt 1 }
     if ($dupes) {
-        Write-Error "Schema validation failed: duplicate JSON key '$($dupes[0].Name)' detected in a story object. Regenerate the stories JSON."
-        exit 1
+        Exit-ContractError -Message "Schema validation failed: duplicate JSON key '$($dupes[0].Name)' detected in a story object." `
+            -RepairHint "Regenerate the stories JSON with each key appearing once per story object."
     }
 }
 
-$parsed = $rawJson | ConvertFrom-Json
-
-# Defensive unwrap: if LLM produced { "stories": [...] } instead of a bare array, extract the inner array
-if ($parsed -is [PSCustomObject] -and $parsed.PSObject.Properties['stories']) {
-    Write-Warning "Input was wrapped in an object. Unwrapping 'stories' property to array."
-    $parsed = $parsed.stories
-}
-
-$stories = @($parsed)
-
-if ($stories.Count -eq 0) {
-    Write-Error "Schema validation failed: input must be a non-empty JSON array of story objects."
-    exit 1
-}
+$stories = $rawJson | ConvertFrom-Json -NoEnumerate
 
 $requiredFields = @('title', 'description', 'acceptanceCriteria', 'briefMarkdown')
 for ($i = 0; $i -lt $stories.Count; $i++) {
     $story = $stories[$i]
     foreach ($field in $requiredFields) {
         if (-not $story.PSObject.Properties[$field] -or [string]::IsNullOrWhiteSpace($story.$field)) {
-            Write-Error "Schema validation failed: story[$i] is missing required field '$field'."
-            exit 1
+            Exit-ContractError -Message "Schema validation failed: story[$i] is missing required field '$field'." `
+                -RepairHint "Provide a non-empty '$field' for story[$i]." -AllowedValues $requiredFields
         }
     }
 }
 
-Write-Host "Schema validation passed: $($stories.Count) stories, all required fields present."
+Write-Host "Schema validation passed: $($stories.Count) stories."
 # --- End schema validation ---
 
 if ($DryRun) {

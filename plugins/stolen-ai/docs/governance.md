@@ -80,6 +80,19 @@ All AI ↔ Script boundaries are governed by JSON Schema:
 
 Agents MUST produce valid JSON against the relevant schema. Scripts MUST validate input before executing.
 
+**Exit codes** (Decision 24; helper: `scripts/lib/contract-error.ps1`):
+- `0` — success
+- `1` — runtime/external failure (ADO, git, network). Stop and report.
+- `2` — caller-fixable contract failure, raised before any side effect. stderr carries one JSON line: `{"error", "repairHint", "allowedValues"?}`. Orchestrators may apply the hint and retry once; a retry must never bypass an approval gate (changed content needs fresh human review).
+
+## Document Precedence
+
+When sources disagree during implementation or review (Decision 25):
+
+`spec.json` (approved) > its `decisions` / `negativeConstraints` > ADRs > Story AC / brief > glossary
+
+The AC is the contract upstream of planning; once a spec is approved it is authoritative downstream. If the spec appears to contradict the AC, pause for a human — do not resolve it silently in either direction.
+
 ## Doc Maintenance
 
 Agent-facing documentation (glossary, governance, decisions, agent-surface-selection) must stay accurate for agents to produce correct output. Stale context = worse results.
